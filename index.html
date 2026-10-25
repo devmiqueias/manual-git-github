@@ -1,0 +1,2601 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Manual gratuito e ilustrado de Git e GitHub, do zero ao avançado, para Windows, Linux e macOS. Por Miquéias (github.com/devmiqueias).">
+<meta name="author" content="Miquéias">
+<link rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+<title>Manual Git &amp; GitHub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: caderno de aulas — barra fixa com seletor de sistema, sumário lateral, coluna de leitura com terminais e diagramas */
+:root{
+  --bg:#f3f5fb; --surface:#ffffff; --surface-2:#e9edf8; --ink:#171b38; --muted:#575d82; --line:#d9deee;
+  --accent:#2a54e4; --accent-ink:#ffffff; --accent-soft:#dfe6ff;
+  --marker:#ffd648; --marker-ink:#171b38;
+  --ok:#0f8a63; --warn:#b86e00; --danger:#cf3438;
+  --tip-bg:#e3f6ee; --warn-bg:#fff3d9; --danger-bg:#fde6e6; --chal-bg:#ece5ff; --ana-bg:#e2efff;
+  --chal:#6b3fd1;
+  --term-bg:#151935; --term-bar:#1f2447; --term-ink:#e7eaff; --term-dim:#8e94c4; --term-prompt:#6fe3b4; --term-comment:#f3c86a;
+  --lane-main:#2a54e4; --lane-feat:#0f8a63; --lane-fix:#cf3438; --lane-merge:#8a45d0; --node-ink:#ffffff;
+  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10132a; --surface:#181c3a; --surface-2:#232850; --ink:#e9ebfa; --muted:#a3a8cc; --line:#2d335e;
+  --accent:#7f9cff; --accent-ink:#0f1230; --accent-soft:#263160;
+  --marker:#ffd648; --marker-ink:#171b38;
+  --ok:#4fd3a0; --warn:#ffbe55; --danger:#ff7b7e;
+  --tip-bg:#13352c; --warn-bg:#3a2e12; --danger-bg:#3d1c22; --chal-bg:#2a2152; --ana-bg:#172c4f;
+  --chal:#b79bff;
+  --term-bg:#0b0e22; --term-bar:#151a3a; --term-ink:#e7eaff; --term-dim:#8e94c4; --term-prompt:#6fe3b4; --term-comment:#f3c86a;
+  --lane-main:#6f8fff; --lane-feat:#38c08f; --lane-fix:#ff6b6e; --lane-merge:#b07bff; --node-ink:#0f1230;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10132a; --surface:#181c3a; --surface-2:#232850; --ink:#e9ebfa; --muted:#a3a8cc; --line:#2d335e;
+  --accent:#7f9cff; --accent-ink:#0f1230; --accent-soft:#263160;
+  --marker:#ffd648; --marker-ink:#171b38;
+  --ok:#4fd3a0; --warn:#ffbe55; --danger:#ff7b7e;
+  --tip-bg:#13352c; --warn-bg:#3a2e12; --danger-bg:#3d1c22; --chal-bg:#2a2152; --ana-bg:#172c4f;
+  --chal:#b79bff;
+  --term-bg:#0b0e22; --term-bar:#151a3a; --term-ink:#e7eaff; --term-dim:#8e94c4; --term-prompt:#6fe3b4; --term-comment:#f3c86a;
+  --lane-main:#6f8fff; --lane-feat:#38c08f; --lane-fix:#ff6b6e; --lane-merge:#b07bff; --node-ink:#0f1230;
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.65 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ic{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.2em}
+
+/* Topbar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px}
+.brand{font:800 1.12rem/1 var(--f-display);display:flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand .dot{width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.os-switch{display:flex;align-items:center;gap:10px}
+.os-switch .lbl{font-size:.82rem;color:var(--muted);font-weight:600}
+.seg{display:flex;background:var(--surface-2);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;font:700 .84rem/1 var(--f-body);color:var(--muted);padding:8px 12px;border-radius:999px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.progress{position:absolute;left:0;bottom:-1px;height:3px;background:var(--marker);width:0}
+@media (max-width:640px){.brand span.txt{display:none}.os-switch .lbl{display:none}.seg button{padding:8px 10px}.seg button .ic{display:none}}
+
+/* Hero */
+.hero{padding-block:56px 40px;border-bottom:1px solid var(--line);background:
+  radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0) 0 0/22px 22px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:40px;align-items:center}
+@media (max-width:900px){.hero .wrap{grid-template-columns:minmax(0,1fr)}}
+.eyebrow{font:600 .78rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(2.3rem,5.6vw,3.9rem)/1.02 var(--f-display);margin:.35em 0 .3em;text-wrap:balance;letter-spacing:-.01em}
+.mk{background:linear-gradient(transparent 58%,var(--marker) 58%,var(--marker) 92%,transparent 92%);padding:0 .08em;color:inherit}
+.lede{font-size:1.15rem;color:var(--muted);max-width:56ch;margin:0 0 22px}
+.hero-facts{display:flex;flex-wrap:wrap;gap:10px;padding:0;margin:0 0 26px;list-style:none}
+.hero-facts li{display:flex;gap:7px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.92rem}
+.hero-facts .ic{color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-ink);font:700 1rem/1 var(--f-body);padding:13px 20px;border-radius:12px;text-decoration:none;border:0;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px}
+.hero-art{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px 18px 10px;position:relative;box-shadow:0 20px 40px -28px rgba(20,30,90,.45)}
+.hero-art .mascot-wrap{position:absolute;top:-34px;right:14px;width:84px;height:84px}
+.hero-art .bubble{position:absolute;top:-26px;right:104px;background:var(--marker);color:var(--marker-ink);font:700 .85rem/1.2 var(--f-display);padding:8px 12px;border-radius:12px 12px 2px 12px;max-width:200px}
+.hero-art figcaption{font-size:.85rem;color:var(--muted);padding:6px 4px 4px}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:56px;padding-block:24px 80px}
+@media (max-width:1023px){.layout{grid-template-columns:minmax(0,1fr);gap:0}.toc-side{display:none}}
+.toc-side{position:sticky;top:calc(80px + env(safe-area-inset-top,0px));align-self:start;max-height:calc(100vh - 100px);overflow:auto;padding:16px 4px 16px 0}
+.toc-title{font:700 .75rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.toc ol{list-style:none;padding:0;margin:0;display:grid;gap:1px}
+.toc a{display:grid;grid-template-columns:30px 1fr 16px;gap:6px;align-items:baseline;text-decoration:none;color:var(--muted);font-size:.92rem;line-height:1.3;padding:6px 8px;border-radius:8px}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a.active{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.toc .n{font:600 .74rem/1 var(--f-mono);color:var(--accent)}
+.toc .ok{color:var(--ok);font-weight:700}
+.toc-mobile{display:none;margin:20px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.toc-mobile summary{cursor:pointer;padding:14px 16px;font:700 1rem var(--f-display);display:flex;gap:8px;align-items:center}
+.toc-mobile .toc{padding:0 8px 10px}
+@media (max-width:1023px){.toc-mobile{display:block}}
+main{min-width:0;max-width:800px}
+
+/* Aulas */
+.aula{padding-block:56px 20px;border-bottom:1px dashed var(--line)}
+.aula-head{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.aula-tag{align-self:flex-start;font:600 .76rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--bg);padding:6px 10px;border-radius:6px;display:flex;gap:8px;align-items:center}
+.aula-tag.extra{background:var(--accent)}
+h2{font:800 clamp(1.8rem,3.6vw,2.4rem)/1.1 var(--f-display);margin:4px 0 0;text-wrap:balance}
+.aula-goal{color:var(--muted);font-size:1.05rem;margin:4px 0 8px}
+h3{font:700 1.35rem/1.2 var(--f-display);margin:36px 0 8px;text-wrap:balance;display:flex;gap:10px;align-items:center}
+h3 .ic{color:var(--accent)}
+h4{font:700 1.08rem/1.3 var(--f-body);margin:22px 0 6px}
+p{margin:0 0 14px}
+ul.list,ol.list{padding-left:1.3em;margin:0 0 14px}
+ul.list li,ol.list li{margin:4px 0}
+code{font:.86em var(--f-mono);background:var(--surface-2);padding:.12em .38em;border-radius:5px;word-break:break-word}
+kbd{font:600 .8em var(--f-mono);border:1px solid var(--line);border-bottom-width:3px;background:var(--surface);border-radius:6px;padding:.1em .45em}
+strong{font-weight:700}
+
+/* Terminal */
+.term{background:var(--term-bg);color:var(--term-ink);border-radius:14px;margin:16px 0 20px;overflow:hidden;border:1px solid var(--term-bar)}
+.term-bar{display:flex;justify-content:space-between;align-items:center;background:var(--term-bar);padding:7px 8px 7px 14px;font:600 .76rem/1 var(--f-mono);color:var(--term-dim);gap:10px}
+.term-bar .t{display:flex;gap:8px;align-items:center}
+.copy{border:1px solid #3a4078;background:transparent;color:var(--term-ink);font:600 .74rem/1 var(--f-mono);padding:6px 10px;border-radius:7px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.copy:hover{background:#2b3160}
+.term pre{margin:0;padding:14px 16px 16px;overflow-x:auto;font:400 .86rem/1.7 var(--f-mono);white-space:pre}
+.term .p{color:var(--term-prompt);user-select:none}
+.term .c{color:var(--term-comment)}
+.term .o{color:var(--term-dim)}
+.term .cmd{color:var(--term-ink)}
+
+/* Callouts */
+.call{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:16px 18px;border-radius:14px;margin:18px 0 22px;background:var(--surface);border:1px solid var(--line)}
+.call .ico{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;color:var(--accent-ink);background:var(--accent)}
+.call .ico .ic{width:22px;height:22px}
+.call .ttl{font:800 1.02rem/1.25 var(--f-display);margin:2px 0 4px}
+.call p:last-child,.call ul:last-child,.call ol:last-child{margin-bottom:0}
+.call.tip{background:var(--tip-bg);border-color:transparent}.call.tip .ico{background:var(--ok)}
+.call.warn{background:var(--warn-bg);border-color:transparent}.call.warn .ico{background:var(--warn)}
+.call.danger{background:var(--danger-bg);border-color:transparent}.call.danger .ico{background:var(--danger)}
+.call.chal{background:var(--chal-bg);border-color:transparent}.call.chal .ico{background:var(--chal)}
+.call.ana{background:var(--ana-bg);border-color:transparent}
+.call.prof .ico{background:transparent;width:44px;height:44px}
+.call.tip .ico,.call.warn .ico,.call.danger .ico,.call.chal .ico{color:var(--surface)}
+
+/* OS groups */
+.osgroup{margin:16px 0 22px;border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
+.os-tabs{display:flex;gap:2px;background:var(--surface-2);padding:5px;overflow-x:auto}
+.os-tabs button{border:0;background:transparent;color:var(--muted);font:700 .88rem/1 var(--f-body);padding:9px 14px;border-radius:9px;cursor:pointer;display:flex;gap:7px;align-items:center;white-space:nowrap}
+.os-tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.os{padding:16px 18px 6px}
+.os .term{margin-top:8px}
+.os-badge{display:inline-flex;gap:6px;align-items:center;font:600 .74rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+
+/* Tables */
+.tbl{overflow-x:auto;margin:16px 0 22px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.94rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 .78rem/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td code{white-space:nowrap}
+.y{color:var(--ok);font-weight:700}.n{color:var(--danger);font-weight:700}
+
+/* Figures */
+figure.fig{margin:20px 0 26px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+figure.fig figcaption{font-size:.88rem;color:var(--muted);margin-top:8px;text-align:center}
+.scroll-x{overflow-x:auto}
+.scroll-x svg{display:block;margin:0 auto;max-width:none}
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:640px){.duo{grid-template-columns:minmax(0,1fr)}}
+.duo .side{background:var(--surface-2);border-radius:12px;padding:10px}
+.duo .side h5{margin:0 0 4px;font:700 .78rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+/* Graph */
+.graph svg{height:auto}
+.g-edge{fill:none;stroke-width:3.2;stroke-linecap:round}
+.e-main{stroke:var(--lane-main)}.e-feat{stroke:var(--lane-feat)}.e-fix{stroke:var(--lane-fix)}.e-merge{stroke:var(--lane-merge)}.e-ghost{stroke:var(--muted)}
+.g-edge.ghost{stroke-dasharray:5 6;opacity:.7}
+.g-node{stroke:var(--surface);stroke-width:3}
+.n-main{fill:var(--lane-main)}.n-feat{fill:var(--lane-feat)}.n-fix{fill:var(--lane-fix)}.n-merge{fill:var(--lane-merge)}
+.n-ghost{fill:var(--surface);stroke:var(--muted);stroke-dasharray:4 3;stroke-width:2}
+.g-ntext{font:700 10.5px var(--f-mono);fill:var(--node-ink);text-anchor:middle;dominant-baseline:central}
+.g-ntext.ghost{fill:var(--muted)}
+.g-ref rect{fill:var(--surface-2);stroke:var(--line);stroke-width:1}
+.g-ref text{font:600 11.5px var(--f-mono);fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.g-ref.head rect{fill:var(--marker);stroke:none}.g-ref.head text{fill:var(--marker-ink);font-weight:700}
+.g-ref.tag rect{fill:var(--chal-bg);stroke:var(--chal)}.g-ref.tag text{fill:var(--chal)}
+.g-ref.remote rect{fill:var(--tip-bg);stroke:var(--ok)}.g-ref.remote text{fill:var(--ok)}
+.g-tick{stroke:var(--muted);stroke-width:1.2}
+
+/* Static diagrams */
+.d-box{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.d-box.hi{fill:var(--accent-soft);stroke:var(--accent)}
+.d-t{font:800 15px var(--f-display);fill:var(--ink);text-anchor:middle}
+.d-s{font:500 12px var(--f-body);fill:var(--muted);text-anchor:middle}
+.d-cmd{font:600 12.5px var(--f-mono);text-anchor:middle}
+.d-fw{fill:var(--accent)}.d-bw{fill:var(--danger)}.d-gr{fill:var(--ok)}.d-pu{fill:var(--chal)}
+.d-arrow{fill:none;stroke-width:2.4;stroke-linecap:round}
+.a-fw{stroke:var(--accent)}.a-bw{stroke:var(--danger)}.a-gr{stroke:var(--ok)}.a-pu{stroke:var(--chal)}
+.d-ic{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.d-chip{fill:var(--surface);stroke:var(--line)}
+.d-label{font:700 12px var(--f-body);fill:var(--ink);text-anchor:middle}
+
+/* Versions illustration */
+.files{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.file{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:600 .82rem/1.3 var(--f-mono);display:flex;gap:8px;align-items:center;transform:rotate(var(--r,0deg))}
+.file .ic{color:var(--danger)}
+.file.good .ic{color:var(--ok)}
+
+/* Flow steps */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:18px 0 24px;padding:0;list-style:none;counter-reset:f}
+.flow li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;counter-increment:f;position:relative}
+.flow li::before{content:counter(f);font:800 1.5rem/1 var(--f-display);color:var(--accent);display:block;margin-bottom:6px}
+.flow li b{display:block;font:700 1rem/1.2 var(--f-display);margin-bottom:4px}
+.flow li span{font-size:.88rem;color:var(--muted);line-height:1.4;display:block}
+.flow li code{font-size:.78rem}
+
+/* Cards grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0 22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h4{margin:0 0 6px;display:flex;gap:8px;align-items:center;font-family:var(--f-display);font-size:1.12rem}
+.card h4 .ic{color:var(--accent)}
+.card p{font-size:.95rem;color:var(--muted);margin:0}
+.card p code{color:var(--ink)}
+
+/* Done button */
+.done{display:flex;justify-content:flex-end;margin:30px 0 0}
+.done button{border:2px solid var(--line);background:var(--surface);color:var(--ink);font:700 .95rem/1 var(--f-body);padding:11px 16px;border-radius:12px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.done button[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+
+/* Reference */
+.ref-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:0 12px}
+.search input{border:0;background:transparent;color:var(--ink);font:400 1rem var(--f-body);padding:11px 0;width:100%;outline:none}
+.search:focus-within{border-color:var(--accent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:1px solid var(--line);background:var(--surface);color:var(--muted);font:700 .84rem/1 var(--f-body);padding:9px 12px;border-radius:999px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lvl{font:700 .7rem/1 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;padding:4px 7px;border-radius:5px;white-space:nowrap}
+.lvl.b{background:var(--tip-bg);color:var(--ok)}.lvl.i{background:var(--warn-bg);color:var(--warn)}.lvl.a{background:var(--chal-bg);color:var(--chal)}
+#refTable td:first-child code{background:transparent;padding:0;font-weight:600;color:var(--accent)}
+.ref-count{font-size:.88rem;color:var(--muted);margin:0 0 6px}
+
+/* FAQ */
+details.faq{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:10px 0}
+details.faq summary{cursor:pointer;padding:14px 16px;font:700 1.02rem/1.35 var(--f-body);display:flex;gap:10px;align-items:flex-start;list-style:none}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary .ic{color:var(--danger);margin-top:3px}
+details.faq[open] summary{border-bottom:1px solid var(--line)}
+details.faq .body{padding:12px 16px 4px}
+
+/* Quiz */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
+.q .qn{font:600 .74rem/1 var(--f-mono);color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
+.q h4{margin:6px 0 12px;font-size:1.08rem}
+.q .opts{display:grid;gap:8px}
+.q .opts button{text-align:left;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:400 .98rem/1.4 var(--f-body);padding:11px 14px;border-radius:11px;cursor:pointer}
+.q .opts button:hover:not(:disabled){border-color:var(--accent)}
+.q .opts button.right{border-color:var(--ok);background:var(--tip-bg)}
+.q .opts button.wrong{border-color:var(--danger);background:var(--danger-bg)}
+.q .opts button:disabled{cursor:default}
+.q .fb{margin:10px 0 0;font-size:.95rem}
+.score{font:800 1.3rem var(--f-display);margin:10px 0}
+
+footer{border-top:1px solid var(--line);padding-block:34px;color:var(--muted);font-size:.92rem}
+.m-body{fill:var(--accent)}.m-face{fill:var(--surface)}.m-ink{fill:var(--ink)}.m-line{fill:none;stroke:var(--ink);stroke-width:4;stroke-linecap:round}
+.m-branch{fill:none;stroke:var(--lane-feat);stroke-width:5;stroke-linecap:round}.m-leaf{fill:var(--lane-feat)}.m-cheek{fill:var(--marker)}
+</style>
+</head>
+<body>
+
+
+<!-- Ícones -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-term" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12.5 15H17"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.4v.2"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z"/><path d="M12 8v5M12 16v.2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="7" r="2.2"/><path d="M6 7.2v9.6M18 9.2c0 4.5-6.5 3.5-11 7.8"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.5h10a4 4 0 0 0 .8-7.9A6 6 0 0 0 6.3 9.3 4.6 4.6 0 0 0 7 18.5z"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="2.5"/><path d="M4 5.5v13c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5v-13M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8.5 7.5h6"/></symbol>
+  <symbol id="i-life" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8l-3.6 3.6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M9 15l-3-3c1-4 5-9 13-9 0 8-5 12-9 13z"/><circle cx="14.5" cy="9.5" r="1.6"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17.5 14.5c2.2.3 3.6 2 4 4.5"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+  <symbol id="mascot" viewBox="0 0 120 120">
+    <path class="m-branch" d="M60 22 C60 12 66 6 76 4"/><circle class="m-leaf" cx="78" cy="4" r="5"/><circle class="m-leaf" cx="54" cy="10" r="4"/><path class="m-branch" d="M59 16 C57 12 55 11 54 10"/>
+    <circle class="m-body" cx="60" cy="66" r="44"/>
+    <circle class="m-face" cx="45" cy="60" r="13"/><circle class="m-face" cx="75" cy="60" r="13"/>
+    <circle class="m-line" cx="45" cy="60" r="13"/><circle class="m-line" cx="75" cy="60" r="13"/><path class="m-line" d="M58 60h4"/>
+    <circle class="m-ink" cx="47" cy="61" r="4.5"/><circle class="m-ink" cx="77" cy="61" r="4.5"/>
+    <circle class="m-cheek" cx="34" cy="82" r="5"/><circle class="m-cheek" cx="86" cy="82" r="5"/>
+    <path class="m-line" d="M48 84 Q60 95 72 84"/>
+  </symbol>
+</svg>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#inicio"><span class="dot"><svg class="ic"><use href="#i-branch"/></svg></span><span class="txt">Manual Git &amp; GitHub</span></a>
+    <div class="os-switch" role="group" aria-label="Escolha seu sistema operacional">
+      <span class="lbl">Meu sistema:</span>
+      <div class="seg" id="osSeg">
+        <button type="button" data-os="win" aria-pressed="false"><svg class="ic"><use href="#i-monitor"/></svg>Windows</button>
+        <button type="button" data-os="linux" aria-pressed="false"><svg class="ic"><use href="#i-term"/></svg>Linux</button>
+        <button type="button" data-os="mac" aria-pressed="false"><svg class="ic"><use href="#i-monitor"/></svg>macOS</button>
+      </div>
+    </div>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<section class="hero" id="inicio">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Curso completo · do zero ao avançado</div>
+      <h1>Git &amp; GitHub sem <span class="mk">mistério</span>.</h1>
+      <p class="lede">Olá! Que bom ter você por aqui. Nesse manual você vai aprender, passo a passo e com muita prática, a versionar, comitar, criar branches, colaborar no GitHub e gerenciar seus projetos de ponta a ponta. Não precisa saber nada antes. Bora?</p>
+      <ul class="hero-facts">
+        <li><svg class="ic"><use href="#i-book"/></svg>19 aulas</li>
+        <li><svg class="ic"><use href="#i-target"/></svg>19 desafios</li>
+        <li><svg class="ic"><use href="#i-term"/></svg>+120 comandos</li>
+        <li><svg class="ic"><use href="#i-monitor"/></svg>Windows, Linux e macOS</li>
+      </ul>
+      <div class="hero-cta">
+        <a class="btn" href="#aula-01"><svg class="ic"><use href="#i-rocket"/></svg>Começar a Aula 01</a>
+        <a class="btn ghost" href="#referencia"><svg class="ic"><use href="#i-search"/></svg>Consultar comandos</a>
+      </div>
+    </div>
+    <figure class="hero-art">
+      <div class="bubble">Esse desenho vai fazer sentido até o fim do manual!</div>
+      <svg class="mascot-wrap" viewBox="0 0 120 120" aria-hidden="true"><use href="#mascot"/></svg>
+      <div class="graph scroll-x" data-spec='{"nodes":[{"id":"c1","x":0,"y":0,"k":"main","t":"C1"},{"id":"c2","x":1,"y":0,"k":"main","t":"C2"},{"id":"c3","x":3,"y":0,"k":"main","t":"C3"},{"id":"f1","x":2,"y":1,"k":"feat","t":"F1"},{"id":"f2","x":3,"y":1,"k":"feat","t":"F2"},{"id":"f3","x":4,"y":1,"k":"feat","t":"F3"},{"id":"m","x":5,"y":0,"k":"merge","t":"M"},{"id":"c6","x":6,"y":0,"k":"main","t":"C6"}],"edges":[["c1","c2"],["c2","c3"],["c3","m"],["c2","f1"],["f1","f2"],["f2","f3"],["f3","m"],["m","c6"]],"refs":[{"at":"c6","text":"main","pos":"top"},{"at":"c6","text":"HEAD","kind":"head","pos":"top"},{"at":"c6","text":"v1.0.0","kind":"tag","pos":"bottom"},{"at":"f3","text":"feature/login","pos":"bottom"}]}'></div>
+      <figcaption>Commits na <code>main</code>, uma branch de funcionalidade, um merge e uma tag de versão.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<div class="wrap layout">
+  <aside class="toc-side" aria-label="Sumário">
+    <p class="toc-title">Sumário</p>
+    <nav class="toc" id="tocSide"></nav>
+  </aside>
+
+  <main>
+    <details class="toc-mobile">
+      <summary><svg class="ic"><use href="#i-book"/></svg>Sumário das aulas</summary>
+      <nav class="toc" id="tocMobile"></nav>
+    </details>
+
+    <div class="call prof" style="margin-top:28px">
+      <div class="ico"><svg viewBox="0 0 120 120" width="44" height="44" aria-hidden="true"><use href="#mascot"/></svg></div>
+      <div>
+        <div class="ttl">Como usar este manual</div>
+        <p>Lá em cima tem o seletor <strong>Meu sistema</strong>. Escolha Windows, Linux ou macOS e todas as instruções que mudam de um sistema para outro se ajustam para você. Os blocos escuros são terminais: o botão <strong>Copiar</strong> copia só os comandos, sem a saída. E no fim de cada aula, marque como concluída para acompanhar seu progresso no sumário.</p>
+        <p>Mais uma coisa: <strong>não leia só, pratique!</strong> Abra o terminal do lado e digite cada comando. É digitando que a mão aprende.</p>
+      </div>
+    </div>
+
+<!-- ============ AULA 01 ============ -->
+<section class="aula" id="aula-01" data-nav="O que é Git e GitHub">
+  <div class="aula-head"><span class="aula-tag">Aula 01</span><h2>O que é versionamento, Git e GitHub</h2></div>
+  <p class="aula-goal">Antes de digitar qualquer comando, você precisa entender o problema que o Git resolve.</p>
+
+  <p>Seja sincero comigo: você já teve uma pasta parecida com essa aqui?</p>
+  <div class="files" aria-label="Exemplo de arquivos sem controle de versão">
+    <div class="file" style="--r:-2deg"><svg class="ic"><use href="#i-file"/></svg>trabalho.docx</div>
+    <div class="file" style="--r:1.5deg"><svg class="ic"><use href="#i-file"/></svg>trabalho_final.docx</div>
+    <div class="file" style="--r:-1deg"><svg class="ic"><use href="#i-file"/></svg>trabalho_final_v2.docx</div>
+    <div class="file" style="--r:2deg"><svg class="ic"><use href="#i-file"/></svg>trabalho_final_v2_agora_vai.docx</div>
+    <div class="file" style="--r:-1.5deg"><svg class="ic"><use href="#i-file"/></svg>trabalho_FINAL_MESMO_revisado.docx</div>
+  </div>
+  <p>Pois é. Isso é <span class="mk">controle de versão feito na mão</span>. Funciona? Mais ou menos. Mas você não sabe o que mudou de uma versão para outra, não sabe quem mudou, e se duas pessoas editarem ao mesmo tempo... vira bagunça. Agora imagina isso num sistema com milhares de arquivos e dezenas de programadores.</p>
+
+  <h3><svg class="ic"><use href="#i-branch"/></svg>O que é o Git</h3>
+  <p>O <strong>Git</strong> é um <strong>sistema de controle de versão distribuído</strong>. Ele foi criado em 2005 por Linus Torvalds, o mesmo criador do Linux, para gerenciar o código do próprio kernel do Linux. Hoje é o padrão absoluto do mercado.</p>
+  <p>Na prática, o Git fica "vigiando" uma pasta do seu projeto. Sempre que você quiser, tira uma <strong>foto</strong> do estado dos arquivos. Cada foto dessas se chama <strong>commit</strong>. Com isso você consegue:</p>
+  <ul class="list">
+    <li>Voltar para qualquer versão anterior do projeto, a qualquer momento;</li>
+    <li>Ver exatamente o que mudou, linha por linha, quem mudou e quando;</li>
+    <li>Trabalhar em várias funcionalidades ao mesmo tempo sem uma atrapalhar a outra (as <strong>branches</strong>);</li>
+    <li>Juntar o trabalho de várias pessoas no mesmo projeto com segurança.</li>
+  </ul>
+  <p>E o "distribuído" significa que <strong>cada pessoa tem uma cópia completa do histórico</strong> no próprio computador. Você consegue trabalhar offline, fazer commits no avião, e só sincronizar depois.</p>
+
+  <h3><svg class="ic"><use href="#i-cloud"/></svg>O que é o GitHub</h3>
+  <p>O <strong>GitHub</strong> é um <strong>serviço na internet que hospeda repositórios Git</strong>. Ele guarda uma cópia do seu projeto na nuvem e adiciona um monte de ferramentas de colaboração em cima: Pull Requests, Issues, revisão de código, Actions (automação), páginas web e muito mais. Ele também funciona como uma vitrine: é o seu portfólio de programador.</p>
+
+  <div class="call ana">
+    <div class="ico"><svg class="ic"><use href="#i-eye"/></svg></div>
+    <div>
+      <div class="ttl">Analogia para nunca mais confundir</div>
+      <p>O <strong>Git</strong> é a câmera fotográfica. Ela tira as fotos (commits) e organiza o álbum, e funciona sozinha, no seu computador, sem internet.<br>O <strong>GitHub</strong> é a rede social onde você publica e compartilha esse álbum com outras pessoas. Existem outras "redes sociais" parecidas, como GitLab e Bitbucket, mas a câmera é sempre a mesma: o Git.</p>
+    </div>
+  </div>
+
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Git</th><th>GitHub</th></tr></thead>
+    <tbody>
+      <tr><td><strong>O que é</strong></td><td>Programa de controle de versão</td><td>Plataforma web de hospedagem e colaboração</td></tr>
+      <tr><td><strong>Onde roda</strong></td><td>No seu computador</td><td>Na nuvem (github.com)</td></tr>
+      <tr><td><strong>Precisa de internet?</strong></td><td>Não</td><td>Sim</td></tr>
+      <tr><td><strong>Quem mantém</strong></td><td>Projeto open source da comunidade</td><td>Empresa (Microsoft)</td></tr>
+      <tr><td><strong>Uso principal</strong></td><td>Commits, branches, histórico</td><td>Compartilhar, revisar, colaborar, publicar</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div>
+      <div class="ttl">Desafio 1</div>
+      <p>Sem olhar para cima, explique em uma frase, para um amigo que não é da área, a diferença entre Git e GitHub. Se conseguiu usar a analogia da câmera e da rede social, você está pronto para a próxima aula.</p>
+    </div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-01" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 02 ============ -->
+<section class="aula" id="aula-02" data-nav="Instalação e terminal">
+  <div class="aula-head"><span class="aula-tag">Aula 02</span><h2>Instalando o Git e perdendo o medo do terminal</h2></div>
+  <p class="aula-goal">Ao final desta aula você terá o Git instalado e saberá navegar entre pastas pelo terminal.</p>
+
+  <h3><svg class="ic"><use href="#i-rocket"/></svg>Instalação</h3>
+  <p>Escolha a aba do seu sistema (ou use o seletor lá em cima, que vale para o manual todo):</p>
+  <div class="osgroup">
+    <div class="os" data-os="win">
+      <div class="os-badge"><svg class="ic"><use href="#i-monitor"/></svg>Windows</div>
+      <h4>Opção 1: instalador (mais fácil)</h4>
+      <ol class="list">
+        <li>Acesse <strong>git-scm.com</strong>, clique em <em>Download for Windows</em> e baixe o instalador de 64 bits.</li>
+        <li>Execute o instalador. Pode ir dando <em>Next</em>, mas <strong>presta atenção</strong> nestas telas:
+          <ul class="list">
+            <li><strong>Choosing the default editor</strong>: escolha <em>Visual Studio Code</em> (se tiver) em vez do Vim.</li>
+            <li><strong>Adjusting the name of the initial branch</strong>: marque <em>Override</em> e deixe <code>main</code>.</li>
+            <li><strong>Adjusting your PATH</strong>: deixe a opção recomendada, <em>Git from the command line and also from 3rd-party software</em>.</li>
+            <li><strong>Line ending conversions</strong>: <em>Checkout Windows-style, commit Unix-style</em>.</li>
+            <li><strong>Credential helper</strong>: <em>Git Credential Manager</em>. Ele vai facilitar muito o login no GitHub depois.</li>
+          </ul>
+        </li>
+        <li>Terminou? Junto com o Git veio o <strong>Git Bash</strong>, um terminal que entende os mesmos comandos do Linux e do Mac. <span class="mk">É ele que vamos usar no manual.</span></li>
+      </ol>
+      <h4>Opção 2: pelo terminal, com o winget</h4>
+      <pre class="term" data-title="PowerShell">
+$ winget install --id Git.Git -e --source winget
+</pre>
+    </div>
+    <div class="os" data-os="linux">
+      <div class="os-badge"><svg class="ic"><use href="#i-term"/></svg>Linux</div>
+      <p>No Linux, o Git está no gerenciador de pacotes da sua distribuição. Abra o terminal com <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd> e rode o comando da sua distro:</p>
+      <pre class="term" data-title="Terminal">
+# Ubuntu, Debian, Linux Mint, Pop!_OS
+$ sudo apt update
+$ sudo apt install git
+
+# Fedora
+$ sudo dnf install git
+
+# Arch Linux, Manjaro
+$ sudo pacman -S git
+
+# openSUSE
+$ sudo zypper install git
+</pre>
+    </div>
+    <div class="os" data-os="mac">
+      <div class="os-badge"><svg class="ic"><use href="#i-monitor"/></svg>macOS</div>
+      <h4>Opção 1: Command Line Tools da Apple</h4>
+      <p>Abra o Terminal (<kbd>Cmd</kbd> + <kbd>Espaço</kbd>, digite <em>Terminal</em>, <kbd>Enter</kbd>) e rode:</p>
+      <pre class="term" data-title="Terminal">
+$ xcode-select --install
+</pre>
+      <p>Vai abrir uma janela pedindo para instalar as ferramentas de desenvolvedor. Aceite e aguarde.</p>
+      <h4>Opção 2: Homebrew (recomendado para quem vai programar)</h4>
+      <p>O Homebrew é o gerenciador de pacotes mais usado no Mac e costuma trazer versões mais novas do Git.</p>
+      <pre class="term" data-title="Terminal">
+# instala o Homebrew (se ainda não tiver)
+$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# instala o Git
+$ brew install git
+</pre>
+    </div>
+  </div>
+
+  <h4>Conferindo se deu certo (qualquer sistema)</h4>
+  <pre class="term" data-title="Terminal">
+$ git --version
+git version 2.x.x
+</pre>
+  <p>Apareceu um número de versão? Parabéns, o Git está instalado! Se apareceu "comando não encontrado", feche e abra o terminal de novo e tente outra vez.</p>
+
+  <h3><svg class="ic"><use href="#i-term"/></svg>Terminal sem medo</h3>
+  <p>Calma, não precisa virar hacker. Para usar o Git você precisa de meia dúzia de comandos de navegação. Primeiro, abra o terminal:</p>
+  <div class="osgroup">
+    <div class="os" data-os="win"><p><strong>Git Bash</strong>: menu Iniciar, digite <em>Git Bash</em>. Ou, dentro de uma pasta no Explorador de Arquivos, clique com o botão direito e escolha <em>Open Git Bash here</em> (no Windows 11, clique antes em <em>Mostrar mais opções</em>).</p>
+      <p>No Git Bash, o disco <code>C:</code> aparece como <code>/c/</code>. Então <code>C:\Users\Ana\Documentos</code> vira <code>/c/Users/Ana/Documentos</code>. E o símbolo <code>~</code> é a sua pasta de usuário.</p></div>
+    <div class="os" data-os="linux"><p><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd> na maioria das distribuições, ou procure por <em>Terminal</em> no menu de aplicativos. O símbolo <code>~</code> representa a sua pasta pessoal (<code>/home/seu-usuario</code>).</p></div>
+    <div class="os" data-os="mac"><p><kbd>Cmd</kbd> + <kbd>Espaço</kbd>, digite <em>Terminal</em> e <kbd>Enter</kbd>. Dica: arrastar uma pasta do Finder para dentro do Terminal cola o caminho completo dela. O símbolo <code>~</code> é a sua pasta pessoal (<code>/Users/seu-usuario</code>).</p></div>
+  </div>
+
+  <div class="tbl"><table>
+    <thead><tr><th>O que faz</th><th>Git Bash / Linux / macOS</th><th>PowerShell / CMD</th></tr></thead>
+    <tbody>
+      <tr><td>Mostra em que pasta estou</td><td><code>pwd</code></td><td><code>pwd</code> / <code>cd</code></td></tr>
+      <tr><td>Lista arquivos</td><td><code>ls</code> · <code>ls -la</code> (inclui ocultos)</td><td><code>dir</code> · <code>ls -Force</code></td></tr>
+      <tr><td>Entra numa pasta</td><td><code>cd projetos</code></td><td><code>cd projetos</code></td></tr>
+      <tr><td>Volta uma pasta</td><td><code>cd ..</code></td><td><code>cd ..</code></td></tr>
+      <tr><td>Vai para a pasta pessoal</td><td><code>cd ~</code></td><td><code>cd ~</code> / <code>cd %USERPROFILE%</code></td></tr>
+      <tr><td>Cria pasta</td><td><code>mkdir site</code></td><td><code>mkdir site</code></td></tr>
+      <tr><td>Cria arquivo vazio</td><td><code>touch index.html</code></td><td><code>ni index.html</code></td></tr>
+      <tr><td>Mostra conteúdo do arquivo</td><td><code>cat README.md</code></td><td><code>type README.md</code></td></tr>
+      <tr><td>Limpa a tela</td><td><code>clear</code> ou <kbd>Ctrl</kbd>+<kbd>L</kbd></td><td><code>cls</code></td></tr>
+      <tr><td>Abre a pasta atual no VS Code</td><td><code>code .</code></td><td><code>code .</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div>
+      <div class="ttl">Dica do professor: use o Tab!</div>
+      <p>Digite o começo do nome de uma pasta e aperte <kbd>Tab</kbd>: o terminal completa sozinho. Aperte <kbd>↑</kbd> para repetir comandos anteriores. Essas duas teclas economizam horas da sua vida.</p>
+    </div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div>
+      <div class="ttl">Desafio 2</div>
+      <p>Pelo terminal, vá até a sua pasta pessoal, crie uma pasta chamada <code>estudos-git</code>, entre nela e use <code>pwd</code> para confirmar onde você está. Depois rode <code>git --version</code> e anote a versão instalada.</p>
+    </div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-02" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 03 ============ -->
+<section class="aula" id="aula-03" data-nav="Configuração inicial">
+  <div class="aula-head"><span class="aula-tag">Aula 03</span><h2>Configuração inicial: dizendo ao Git quem é você</h2></div>
+  <p class="aula-goal">Configurações que você faz uma vez só por computador.</p>
+
+  <p>Todo commit no Git leva uma "assinatura": nome e e-mail do autor. Então a primeira coisa a fazer é se apresentar. Use o <strong>mesmo e-mail da sua conta do GitHub</strong> (ou que você vai usar para criar a conta), assim seus commits aparecem ligados ao seu perfil.</p>
+  <pre class="term" data-title="Terminal">
+# quem é você (obrigatório)
+$ git config --global user.name "Ana Souza"
+$ git config --global user.email "ana@exemplo.com"
+
+# nome padrão da branch inicial
+$ git config --global init.defaultBranch main
+
+# deixa a saída colorida
+$ git config --global color.ui auto
+</pre>
+
+  <h4>Editor padrão</h4>
+  <p>Em alguns momentos o Git abre um editor de texto (para escrever uma mensagem de commit longa, por exemplo). Por padrão ele abre o <strong>Vim</strong>, e muita gente fica presa lá dentro. Vamos trocar para o VS Code:</p>
+  <pre class="term" data-title="Terminal">
+$ git config --global core.editor "code --wait"
+</pre>
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div>
+      <div class="ttl">Caiu no Vim sem querer?</div>
+      <p>Respira. Aperte <kbd>Esc</kbd>, digite <code>:wq</code> e <kbd>Enter</kbd> para salvar e sair. Ou <code>:q!</code> e <kbd>Enter</kbd> para sair sem salvar. Pronto, você está livre.</p>
+    </div>
+  </div>
+
+  <h4>Finais de linha (importante para quem mistura sistemas)</h4>
+  <p>Windows marca o fim de cada linha de um jeito (CRLF) e Linux/macOS de outro (LF). Se uma equipe mistura sistemas e ninguém configura isso, o Git acha que <em>todas</em> as linhas mudaram. A regra é: no repositório fica LF, e cada sistema converte na hora certa.</p>
+  <div class="osgroup">
+    <div class="os" data-os="win"><pre class="term" data-title="Git Bash">
+# converte para CRLF ao baixar e para LF ao comitar
+$ git config --global core.autocrlf true
+</pre></div>
+    <div class="os" data-os="linux"><pre class="term" data-title="Terminal">
+# garante LF ao comitar, sem mexer no que você baixa
+$ git config --global core.autocrlf input
+</pre></div>
+    <div class="os" data-os="mac"><pre class="term" data-title="Terminal">
+# garante LF ao comitar, sem mexer no que você baixa
+$ git config --global core.autocrlf input
+</pre></div>
+  </div>
+
+  <h4>Conferindo suas configurações</h4>
+  <pre class="term" data-title="Terminal">
+$ git config --list
+$ git config --list --show-origin   # mostra de qual arquivo veio cada config
+$ git config user.name               # consulta uma config específica
+Ana Souza
+</pre>
+
+  <h3><svg class="ic"><use href="#i-layers"/></svg>Os três níveis de configuração</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Nível</th><th>Opção</th><th>Vale para</th><th>Onde fica</th></tr></thead>
+    <tbody>
+      <tr><td>Sistema</td><td><code>--system</code></td><td>Todos os usuários do computador</td><td>Arquivo <code>gitconfig</code> da instalação</td></tr>
+      <tr><td>Global</td><td><code>--global</code></td><td>Todos os seus repositórios</td><td><code>~/.gitconfig</code></td></tr>
+      <tr><td>Local</td><td><code>--local</code> (padrão)</td><td>Só o repositório atual</td><td><code>.git/config</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>O mais específico vence. Exemplo clássico: usar o e-mail da empresa só no projeto do trabalho.</p>
+  <pre class="term" data-title="Terminal">
+# dentro da pasta do projeto da empresa
+$ git config user.email "ana.souza@empresa.com.br"
+</pre>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div>
+      <div class="ttl">Desafio 3</div>
+      <p>Configure seu nome, e-mail, branch padrão <code>main</code>, editor e finais de linha. Depois rode <code>git config --list --show-origin</code> e encontre o arquivo onde suas configurações globais foram gravadas.</p>
+    </div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-03" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 04 ============ -->
+<section class="aula" id="aula-04" data-nav="Como o Git pensa">
+  <div class="aula-head"><span class="aula-tag">Aula 04</span><h2>Como o Git pensa: as três áreas</h2></div>
+  <p class="aula-goal">Esta é a aula mais importante do manual. Entendeu isso, entendeu o Git.</p>
+
+  <p>Presta atenção aqui, porque é aqui que a maioria das pessoas se perde. Seus arquivos, dentro de um projeto com Git, podem estar em <strong>três lugares</strong> (e um quarto, quando entra o GitHub):</p>
+
+  <figure class="fig">
+    <div class="scroll-x">
+    <svg viewBox="0 0 900 300" width="900" role="img" aria-label="Diagrama: diretório de trabalho, área de preparação, repositório local e repositório remoto, com os comandos que movem mudanças entre eles">
+      <defs>
+        <marker id="ar-fw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-fw"/></marker>
+        <marker id="ar-bw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-bw"/></marker>
+        <marker id="ar-gr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-gr"/></marker>
+      </defs>
+      <g>
+        <rect class="d-box" x="10" y="90" width="190" height="120" rx="16"/>
+        <g transform="translate(93,104)"><use href="#i-folder" width="24" height="24" class="d-ic"/></g>
+        <text class="d-t" x="105" y="152">Diretório de</text><text class="d-t" x="105" y="170">trabalho</text>
+        <text class="d-s" x="105" y="192">working directory</text>
+      </g>
+      <g>
+        <rect class="d-box" x="240" y="90" width="190" height="120" rx="16"/>
+        <g transform="translate(323,104)"><use href="#i-box" width="24" height="24" class="d-ic"/></g>
+        <text class="d-t" x="335" y="152">Área de</text><text class="d-t" x="335" y="170">preparação</text>
+        <text class="d-s" x="335" y="192">staging area / index</text>
+      </g>
+      <g>
+        <rect class="d-box hi" x="470" y="90" width="190" height="120" rx="16"/>
+        <g transform="translate(553,104)"><use href="#i-db" width="24" height="24" class="d-ic"/></g>
+        <text class="d-t" x="565" y="152">Repositório</text><text class="d-t" x="565" y="170">local</text>
+        <text class="d-s" x="565" y="192">a pasta .git</text>
+      </g>
+      <g>
+        <rect class="d-box" x="700" y="90" width="190" height="120" rx="16" stroke-dasharray="6 5"/>
+        <g transform="translate(783,104)"><use href="#i-cloud" width="24" height="24" class="d-ic"/></g>
+        <text class="d-t" x="795" y="152">Repositório</text><text class="d-t" x="795" y="170">remoto</text>
+        <text class="d-s" x="795" y="192">GitHub (origin)</text>
+      </g>
+      <!-- forward -->
+      <path class="d-arrow a-fw" d="M110 84 C110 40 330 40 330 84" marker-end="url(#ar-fw)"/>
+      <text class="d-cmd d-fw" x="220" y="36">git add</text>
+      <path class="d-arrow a-fw" d="M340 84 C340 40 560 40 560 84" marker-end="url(#ar-fw)"/>
+      <text class="d-cmd d-fw" x="450" y="36">git commit</text>
+      <path class="d-arrow a-fw" d="M570 84 C570 40 790 40 790 84" marker-end="url(#ar-fw)"/>
+      <text class="d-cmd d-fw" x="680" y="36">git push</text>
+      <!-- backward -->
+      <path class="d-arrow a-bw" d="M330 216 C330 256 110 256 110 216" marker-end="url(#ar-bw)"/>
+      <text class="d-cmd d-bw" x="220" y="276">git restore --staged</text>
+      <path class="d-arrow a-gr" d="M790 216 C790 270 560 270 560 216" marker-end="url(#ar-gr)"/>
+      <text class="d-cmd d-gr" x="680" y="290">git fetch / git pull</text>
+    </svg>
+    </div>
+    <figcaption>As mudanças andam da esquerda para a direita com <code>add</code>, <code>commit</code> e <code>push</code>. Os outros comandos fazem o caminho de volta.</figcaption>
+  </figure>
+
+  <div class="cards">
+    <div class="card"><h4><svg class="ic"><use href="#i-folder"/></svg>Diretório de trabalho</h4><p>A pasta que você vê e edita no seu editor. É aqui que você cria, altera e apaga arquivos. O Git apenas observa.</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-box"/></svg>Staging area</h4><p>Uma "sala de espera". Você escolhe com <code>git add</code> quais mudanças vão entrar no próximo commit.</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-db"/></svg>Repositório local</h4><p>O histórico de commits, guardado na pasta oculta <code>.git</code>. Cada <code>git commit</code> grava uma foto aqui.</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-cloud"/></svg>Repositório remoto</h4><p>Uma cópia do repositório num servidor, como o GitHub. Você envia com <code>git push</code> e recebe com <code>git pull</code>.</p></div>
+  </div>
+
+  <div class="call ana">
+    <div class="ico"><svg class="ic"><use href="#i-eye"/></svg></div>
+    <div>
+      <div class="ttl">Analogia: a foto da formatura</div>
+      <p>O diretório de trabalho é o salão da festa, com todo mundo circulando. O <code>git add</code> é o fotógrafo chamando quem vai sair na foto: "você, você e você, vem pra cá". A staging area é o grupo posicionado na frente da câmera. O <code>git commit</code> é o clique, e a foto vai para o álbum (o repositório). E o <code>git push</code> é postar o álbum na internet.</p>
+      <p>Por que não tirar foto de todo mundo direto? Porque às vezes você mexeu em cinco arquivos, mas só três fazem parte da mesma tarefa. A staging area deixa você montar commits organizados.</p>
+    </div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-file"/></svg>O ciclo de vida de um arquivo</h3>
+  <figure class="fig">
+    <div class="scroll-x">
+    <svg viewBox="0 0 820 230" width="820" role="img" aria-label="Ciclo de vida: não rastreado, preparado, comitado e modificado">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-fw"/></marker>
+        <marker id="ar2r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-bw"/></marker>
+      </defs>
+      <rect class="d-box" x="10" y="90" width="160" height="64" rx="32"/><text class="d-t" x="90" y="118">Untracked</text><text class="d-s" x="90" y="138">não rastreado</text>
+      <rect class="d-box" x="225" y="90" width="160" height="64" rx="32"/><text class="d-t" x="305" y="118">Staged</text><text class="d-s" x="305" y="138">preparado</text>
+      <rect class="d-box hi" x="440" y="90" width="160" height="64" rx="32"/><text class="d-t" x="520" y="118">Unmodified</text><text class="d-s" x="520" y="138">comitado, sem mudanças</text>
+      <rect class="d-box" x="650" y="90" width="160" height="64" rx="32"/><text class="d-t" x="730" y="118">Modified</text><text class="d-s" x="730" y="138">modificado</text>
+      <path class="d-arrow a-fw" d="M172 122 H221" marker-end="url(#ar2)"/><text class="d-cmd d-fw" x="197" y="110">add</text>
+      <path class="d-arrow a-fw" d="M387 122 H436" marker-end="url(#ar2)"/><text class="d-cmd d-fw" x="412" y="110">commit</text>
+      <path class="d-arrow a-fw" d="M602 122 H646" marker-end="url(#ar2)"/><text class="d-cmd d-fw" x="624" y="110">edita</text>
+      <path class="d-arrow a-fw" d="M730 86 C730 30 305 30 305 86" marker-end="url(#ar2)"/><text class="d-cmd d-fw" x="518" y="26">git add (de novo)</text>
+      <path class="d-arrow a-bw" d="M520 158 C520 214 90 214 90 158" marker-end="url(#ar2r)"/><text class="d-cmd d-bw" x="305" y="222">git rm --cached (para de rastrear)</text>
+    </svg>
+    </div>
+    <figcaption>Todo arquivo do projeto está sempre em um desses estados. O <code>git status</code> diz qual.</figcaption>
+  </figure>
+
+  <h3><svg class="ic"><use href="#i-star"/></svg>Commit, hash e HEAD</h3>
+  <p>Cada commit recebe uma identidade única chamada <strong>hash</strong>, uma sequência de 40 caracteres como <code>3f9a1c27e5b0...</code>. Na prática a gente usa só os 7 primeiros: <code>3f9a1c2</code>. Cada commit também aponta para o commit anterior (o "pai"). Isso forma uma corrente:</p>
+  <figure class="fig">
+    <div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"main","t":"C3"},{"id":"d","x":3,"y":0,"k":"main","t":"C4"}],"edges":[["a","b"],["b","c"],["c","d"]],"refs":[{"at":"d","text":"main","pos":"top"},{"at":"d","text":"HEAD","kind":"head","pos":"top"},{"at":"a","text":"3f9a1c2","pos":"bottom"},{"at":"b","text":"8b21e07","pos":"bottom"},{"at":"c","text":"c4d0f55","pos":"bottom"},{"at":"d","text":"e19a7b3","pos":"bottom"}]}'></div>
+    <figcaption>Os commits ligados em sequência, cada um com seu hash. A etiqueta <code>main</code> é a branch; <code>HEAD</code> indica onde você está agora.</figcaption>
+  </figure>
+  <ul class="list">
+    <li><strong>Branch</strong> (como <code>main</code>) é só uma etiqueta que aponta para um commit e anda sozinha quando você faz um novo commit.</li>
+    <li><strong>HEAD</strong> é o "você está aqui" do mapa do shopping. Normalmente aponta para a branch em que você está.</li>
+    <li><code>HEAD~1</code> é o commit anterior ao HEAD, <code>HEAD~2</code> o de antes, e assim por diante. Você vai usar muito isso.</li>
+  </ul>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div>
+      <div class="ttl">Desafio 4</div>
+      <p>Desenhe num papel as quatro áreas e escreva, nas setas, qual comando leva uma mudança de uma área para a outra. Se conseguir fazer de memória, você dominou a teoria que sustenta todo o resto.</p>
+    </div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-04" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 05 ============ -->
+<section class="aula" id="aula-05" data-nav="Primeiro repositório">
+  <div class="aula-head"><span class="aula-tag">Aula 05</span><h2>Mão na massa: seu primeiro repositório</h2></div>
+  <p class="aula-goal">Criar um repositório, fazer os primeiros commits e entender o que o Git responde.</p>
+
+  <p>Chega de teoria. Bora pra prática! Vamos criar um mini site pessoal e versionar ele.</p>
+
+  <h3><svg class="ic"><use href="#i-flag"/></svg>Passo 1: criar a pasta e iniciar o Git</h3>
+  <div class="osgroup">
+    <div class="os" data-os="win"><pre class="term" data-title="Git Bash">
+$ cd ~/Documents
+$ mkdir meu-site
+$ cd meu-site
+$ git init
+Initialized empty Git repository in C:/Users/Ana/Documents/meu-site/.git/
+</pre></div>
+    <div class="os" data-os="linux"><pre class="term" data-title="Terminal">
+$ cd ~
+$ mkdir meu-site
+$ cd meu-site
+$ git init
+Initialized empty Git repository in /home/ana/meu-site/.git/
+</pre></div>
+    <div class="os" data-os="mac"><pre class="term" data-title="Terminal">
+$ cd ~/Documents
+$ mkdir meu-site
+$ cd meu-site
+$ git init
+Initialized empty Git repository in /Users/ana/Documents/meu-site/.git/
+</pre></div>
+  </div>
+  <p>O <code>git init</code> criou uma pasta oculta chamada <code>.git</code>. <span class="mk">Ela É o repositório.</span> Todo o histórico mora ali dentro. Se você apagar essa pasta, o projeto volta a ser uma pasta comum, sem histórico nenhum.</p>
+  <div class="call danger">
+    <div class="ico"><svg class="ic"><use href="#i-stop"/></svg></div>
+    <div>
+      <div class="ttl">Cuidado!</div>
+      <p>Não rode <code>git init</code> na sua pasta pessoal inteira, nem na Área de Trabalho. Sempre dentro da pasta de um projeto específico. E nunca mexa manualmente nos arquivos de dentro do <code>.git</code>.</p>
+    </div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-eye"/></svg>Passo 2: o comando que você mais vai usar</h3>
+  <pre class="term" data-title="Terminal">
+$ git status
+On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+</pre>
+  <p>O <code>git status</code> é o seu melhor amigo. <strong>Na dúvida, git status.</strong> Ele diz em que branch você está e em que estado cada arquivo se encontra.</p>
+
+  <h3><svg class="ic"><use href="#i-file"/></svg>Passo 3: criar arquivos</h3>
+  <p>Crie os arquivos no seu editor ou direto pelo terminal:</p>
+  <pre class="term" data-title="Terminal">
+$ echo "# Meu Site" > README.md
+$ echo "&lt;h1&gt;Olá, mundo!&lt;/h1&gt;" > index.html
+$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+        README.md
+        index.html
+</pre>
+  <div class="osgroup">
+    <div class="os" data-os="win"><div class="call warn" style="margin:0 0 12px"><div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div><div><div class="ttl">Usuário de Windows, atenção</div><p>Rode o <code>echo ... &gt;</code> no <strong>Git Bash</strong>. No PowerShell antigo (5.1) esse comando grava o arquivo em UTF-16 e o Git passa a tratá-lo como binário. Se preferir, crie os arquivos pelo VS Code.</p></div></div></div>
+    <div class="os" data-os="linux"><p>Tudo certo por aqui: o <code>echo</code> funciona igualzinho no seu terminal.</p></div>
+    <div class="os" data-os="mac"><p>Tudo certo por aqui: o <code>echo</code> funciona igualzinho no seu Terminal (zsh).</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-box"/></svg>Passo 4: preparar (git add)</h3>
+  <pre class="term" data-title="Terminal">
+$ git add README.md index.html
+$ git status
+Changes to be committed:
+  (use "git rm --cached &lt;file&gt;..." to unstage)
+        new file:   README.md
+        new file:   index.html
+</pre>
+  <p>Outras formas de usar o <code>git add</code>, para você consultar quando precisar:</p>
+  <pre class="term" data-title="Terminal">
+$ git add README.md        # um arquivo específico
+$ git add a.html b.css     # vários arquivos de uma vez
+$ git add .                # tudo da pasta atual para baixo
+$ git add -A               # tudo do repositório (inclusive arquivos apagados)
+$ git add "*.html"         # por padrão de nome
+</pre>
+
+  <h3><svg class="ic"><use href="#i-db"/></svg>Passo 5: comitar (git commit)</h3>
+  <pre class="term" data-title="Terminal">
+$ git commit -m "Cria estrutura inicial do site"
+[main (root-commit) 3f9a1c2] Cria estrutura inicial do site
+ 2 files changed, 2 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 index.html
+</pre>
+  <p>Olha só o que o Git respondeu: a branch (<code>main</code>), o hash curto (<code>3f9a1c2</code>), a sua mensagem e um resumo do que mudou. Foto tirada!</p>
+
+  <h4>Variações úteis do commit</h4>
+  <pre class="term" data-title="Terminal">
+# abre o editor para escrever título e descrição longos
+$ git commit
+
+# título + corpo pela linha de comando
+$ git commit -m "Adiciona página de contato" -m "Inclui formulário e link para e-mail."
+
+# atalho: add + commit de arquivos JÁ RASTREADOS (não pega arquivos novos!)
+$ git commit -am "Corrige erro de digitação no título"
+</pre>
+
+  <h3><svg class="ic"><use href="#i-book"/></svg>Passo 6: ver o histórico</h3>
+  <pre class="term" data-title="Terminal">
+$ git log
+commit 3f9a1c27e5b04d6a9e1f2b3c4d5e6f7a8b9c0d1e (HEAD -> main)
+Author: Ana Souza &lt;ana@exemplo.com&gt;
+Date:   Sun Oct 25 10:30:00 2026 -0300
+
+    Cria estrutura inicial do site
+
+$ git log --oneline
+3f9a1c2 (HEAD -> main) Cria estrutura inicial do site
+</pre>
+
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div>
+      <div class="ttl">O ciclo que você vai repetir mil vezes</div>
+      <p><strong>Edita → <code>git status</code> → <code>git add</code> → <code>git commit</code>.</strong> Grave esse mantra. Faça commits pequenos e frequentes, cada um com uma ideia só. Commit é de graça!</p>
+    </div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div>
+      <div class="ttl">Desafio 5</div>
+      <p>No seu <code>meu-site</code>, crie um <code>style.css</code> e faça um commit só com ele. Depois edite o <code>index.html</code> e o <code>README.md</code>, mas comite apenas o <code>index.html</code>. Rode <code>git status</code> no final: o README deve continuar como "modified". Termine com <code>git log --oneline</code> mostrando 3 commits.</p>
+    </div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-05" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 06 ============ -->
+<section class="aula" id="aula-06" data-nav="Investigando o histórico">
+  <div class="aula-head"><span class="aula-tag">Aula 06</span><h2>Investigando o histórico: log, show, diff e blame</h2></div>
+  <p class="aula-goal">Virar detetive do próprio código: o que mudou, quando, e quem mudou.</p>
+
+  <h3><svg class="ic"><use href="#i-book"/></svg>git log: todas as formas de ver o histórico</h3>
+  <pre class="term" data-title="Terminal">
+$ git log --oneline                    # uma linha por commit
+$ git log --oneline --graph --all      # desenha as branches no terminal
+$ git log -n 5                         # só os 5 últimos
+$ git log --stat                       # quais arquivos mudaram em cada commit
+$ git log -p                           # mostra o código alterado (patch)
+$ git log --author="Ana"               # commits de uma pessoa
+$ git log --since="2 weeks ago"        # das últimas 2 semanas
+$ git log --until="2026-09-30"         # até uma data
+$ git log --grep="login"               # busca na mensagem do commit
+$ git log -S "calcularFrete"           # commits que adicionaram/removeram esse texto
+$ git log -- index.html                # histórico de um arquivo
+$ git log --follow -- src/app.js       # segue o arquivo mesmo se foi renomeado
+$ git log main..feature                # commits que estão na feature e não na main
+$ git log --pretty=format:"%h %an %ar - %s"
+3f9a1c2 Ana Souza 2 hours ago - Cria estrutura inicial do site
+</pre>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">Saindo do log</div><p>Quando o histórico é grande, o Git abre um "paginador". Use <kbd>Espaço</kbd> para descer uma página, <kbd>↑</kbd>/<kbd>↓</kbd> para rolar, <kbd>/</kbd> para buscar e <kbd>q</kbd> para sair.</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-eye"/></svg>git show: abrindo um commit</h3>
+  <pre class="term" data-title="Terminal">
+$ git show                     # o último commit (HEAD)
+$ git show 3f9a1c2             # um commit específico
+$ git show HEAD~2              # dois commits atrás
+$ git show HEAD~1:index.html   # o conteúdo do arquivo naquele commit
+$ git show --stat 3f9a1c2      # só o resumo
+</pre>
+
+  <h3><svg class="ic"><use href="#i-search"/></svg>git diff: o que mudou exatamente</h3>
+  <p>Linhas com <code>+</code> (verde) foram adicionadas; linhas com <code>-</code> (vermelho) foram removidas. Agora, presta atenção em <strong>o que está sendo comparado</strong> em cada caso:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Comando</th><th>Compara</th></tr></thead>
+    <tbody>
+      <tr><td><code>git diff</code></td><td>Diretório de trabalho × staging (o que você ainda <strong>não</strong> adicionou)</td></tr>
+      <tr><td><code>git diff --staged</code></td><td>Staging × último commit (o que <strong>vai entrar</strong> no próximo commit)</td></tr>
+      <tr><td><code>git diff HEAD</code></td><td>Tudo que mudou desde o último commit</td></tr>
+      <tr><td><code>git diff HEAD~3 HEAD</code></td><td>Dois commits quaisquer</td></tr>
+      <tr><td><code>git diff main feature</code></td><td>Duas branches</td></tr>
+      <tr><td><code>git diff --stat</code></td><td>Só o resumo por arquivo</td></tr>
+      <tr><td><code>git diff --name-only</code></td><td>Só os nomes dos arquivos alterados</td></tr>
+      <tr><td><code>git diff --word-diff</code></td><td>Destaca palavras, ótimo para textos</td></tr>
+    </tbody>
+  </table></div>
+  <pre class="term" data-title="Terminal">
+$ git diff
+diff --git a/index.html b/index.html
+--- a/index.html
++++ b/index.html
+@@ -1 +1,2 @@
+-&lt;h1&gt;Olá, mundo!&lt;/h1&gt;
++&lt;h1&gt;Olá, eu sou a Ana!&lt;/h1&gt;
++&lt;p&gt;Desenvolvedora em formação.&lt;/p&gt;
+</pre>
+
+  <h3><svg class="ic"><use href="#i-users"/></svg>git blame e shortlog: quem fez o quê</h3>
+  <pre class="term" data-title="Terminal">
+$ git blame index.html          # autor e commit de cada linha
+$ git blame -L 10,25 app.js     # só das linhas 10 a 25
+$ git shortlog -sn              # ranking de commits por pessoa
+    42  Ana Souza
+    17  Bruno Lima
+</pre>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">Blame não é para culpar ninguém</div><p>Apesar do nome ("culpar"), use o <code>blame</code> para entender o <em>contexto</em>: encontrar o commit que mudou aquela linha e ler a mensagem que explica o porquê.</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 6</div><p>No seu projeto, edite o <code>index.html</code> sem dar <code>add</code> e compare a saída de <code>git diff</code> e <code>git diff --staged</code>. Depois dê <code>add</code> e compare de novo. Explique para você mesmo por que as saídas trocaram de lugar.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-06" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 07 ============ -->
+<section class="aula" id="aula-07" data-nav="Desfazendo coisas">
+  <div class="aula-head"><span class="aula-tag">Aula 07</span><h2>Desfazendo coisas: a máquina do tempo</h2></div>
+  <p class="aula-goal">Errou? Tudo bem. Aqui você aprende a voltar atrás em cada uma das áreas.</p>
+
+  <p>Essa é a parte em que o Git salva a sua pele. A regra é: <strong>primeiro identifique em que área está o erro</strong>, depois escolha o comando.</p>
+
+  <h3><svg class="ic"><use href="#i-undo"/></svg>Desfazendo no diretório de trabalho e na staging</h3>
+  <pre class="term" data-title="Terminal">
+# descarta as alterações que você ainda NÃO adicionou (git add)
+$ git restore index.html
+
+# o mesmo, para todos os arquivos
+$ git restore .
+
+# tira um arquivo da staging, mas MANTÉM suas alterações
+$ git restore --staged index.html
+
+# volta o arquivo exatamente ao último commit (staging e disco)
+$ git restore --staged --worktree index.html
+
+# traz um arquivo de como ele estava 3 commits atrás
+$ git restore --source=HEAD~3 index.html
+</pre>
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div><div class="ttl">Comandos antigos que você vai ver por aí</div><p>Em tutoriais mais antigos aparecem <code>git checkout -- arquivo</code> (igual a <code>git restore arquivo</code>) e <code>git reset HEAD arquivo</code> (igual a <code>git restore --staged arquivo</code>). Funcionam até hoje, mas o <code>restore</code> é mais claro.</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-db"/></svg>Consertando o último commit: --amend</h3>
+  <pre class="term" data-title="Terminal">
+# errou a mensagem?
+$ git commit --amend -m "Mensagem corrigida"
+
+# esqueceu um arquivo?
+$ git add arquivo-esquecido.css
+$ git commit --amend --no-edit
+</pre>
+  <p>O <code>--amend</code> <strong>substitui</strong> o último commit por um novo (o hash muda). Use só em commits que você <strong>ainda não enviou</strong> para o GitHub.</p>
+
+  <h3><svg class="ic"><use href="#i-undo"/></svg>git reset: voltando a branch para trás</h3>
+  <p>O <code>git reset</code> move a branch atual para um commit anterior. A diferença entre os modos é <strong>o que acontece com as mudanças</strong> dos commits que "sumiram":</p>
+  <figure class="fig">
+    <div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"ghost","t":"C3"},{"id":"d","x":3,"y":0,"k":"ghost","t":"C4"}],"edges":[["a","b"],["b","c"],["c","d"]],"refs":[{"at":"b","text":"main","pos":"top"},{"at":"b","text":"HEAD","kind":"head","pos":"top"},{"at":"d","text":"antes estava aqui","pos":"bottom"}]}'></div>
+    <figcaption>Depois de <code>git reset HEAD~2</code>: a <code>main</code> volta para C2, e C3 e C4 deixam de fazer parte da branch.</figcaption>
+  </figure>
+  <div class="tbl"><table>
+    <thead><tr><th>Comando</th><th>Commits</th><th>Staging</th><th>Seus arquivos</th><th>Perigo</th></tr></thead>
+    <tbody>
+      <tr><td><code>git reset --soft HEAD~1</code></td><td>Desfeitos</td><td class="y">Mudanças ficam preparadas</td><td class="y">Intactos</td><td>Baixo</td></tr>
+      <tr><td><code>git reset HEAD~1</code> (--mixed, padrão)</td><td>Desfeitos</td><td class="n">Esvaziada</td><td class="y">Intactos (mudanças viram "modified")</td><td>Baixo</td></tr>
+      <tr><td><code>git reset --hard HEAD~1</code></td><td>Desfeitos</td><td class="n">Esvaziada</td><td class="n">Mudanças APAGADAS</td><td><strong class="n">Alto</strong></td></tr>
+    </tbody>
+  </table></div>
+  <pre class="term" data-title="Terminal">
+# "quero refazer o último commit, mas manter tudo pronto para comitar"
+$ git reset --soft HEAD~1
+
+# "quero desfazer os 3 últimos commits e reorganizar os arquivos"
+$ git reset HEAD~3
+
+# "quero jogar fora tudo e voltar exatamente para esse commit"
+$ git reset --hard 8b21e07
+</pre>
+  <div class="call danger">
+    <div class="ico"><svg class="ic"><use href="#i-stop"/></svg></div>
+    <div><div class="ttl">Cuidado com o --hard</div><p>Alterações que <strong>nunca foram comitadas</strong> e são apagadas pelo <code>--hard</code> não voltam mais. Já commits "perdidos" ainda dá para recuperar com o <code>git reflog</code> (Aula 17). E nunca use <code>reset</code> em commits que outras pessoas já baixaram do GitHub.</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-layers"/></svg>git revert: desfazendo com segurança</h3>
+  <p>O <code>revert</code> <strong>não apaga</strong> nada. Ele cria um <strong>commit novo</strong> que faz exatamente o contrário do commit escolhido. É o jeito certo de desfazer algo que <strong>já está no GitHub</strong>.</p>
+  <figure class="fig">
+    <div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"fix","t":"C3"},{"id":"d","x":3,"y":0,"k":"main","t":"C4"},{"id":"r","x":4,"y":0,"k":"merge","t":"R3"}],"edges":[["a","b"],["b","c"],["c","d"],["d","r"]],"refs":[{"at":"r","text":"main","pos":"top"},{"at":"r","text":"HEAD","kind":"head","pos":"top"},{"at":"c","text":"commit com bug","pos":"bottom"},{"at":"r","text":"desfaz C3","pos":"bottom"}]}'></div>
+    <figcaption><code>git revert C3</code> adiciona R3, que anula as mudanças de C3. O histórico continua inteiro.</figcaption>
+  </figure>
+  <pre class="term" data-title="Terminal">
+$ git revert c4d0f55
+$ git revert --no-edit c4d0f55     # sem abrir o editor
+$ git revert HEAD~2..HEAD          # reverte um intervalo de commits
+</pre>
+
+  <h3><svg class="ic"><use href="#i-file"/></svg>Removendo, renomeando e limpando arquivos</h3>
+  <pre class="term" data-title="Terminal">
+$ git rm arquivo.txt              # apaga do disco e prepara a remoção
+$ git rm --cached senha.txt       # para de rastrear, mas mantém no disco
+$ git rm -r --cached node_modules # o mesmo, para uma pasta
+$ git mv antigo.js novo.js        # renomeia/move e o Git entende como renomeação
+
+$ git clean -n                    # SIMULA: mostra arquivos não rastreados que seriam apagados
+$ git clean -f                    # apaga arquivos não rastreados
+$ git clean -fd                   # apaga arquivos e pastas não rastreados
+</pre>
+
+  <h3><svg class="ic"><use href="#i-target"/></svg>Tabela "e agora, qual eu uso?"</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Situação</th><th>Comando</th></tr></thead>
+    <tbody>
+      <tr><td>Estraguei um arquivo (ainda sem <code>add</code>) e quero desfazer</td><td><code>git restore arquivo</code></td></tr>
+      <tr><td>Quero o arquivo exatamente como no último commit, mesmo já adicionado</td><td><code>git restore --staged --worktree arquivo</code></td></tr>
+      <tr><td>Dei <code>add</code> no arquivo errado</td><td><code>git restore --staged arquivo</code></td></tr>
+      <tr><td>Errei a mensagem do último commit (não enviado)</td><td><code>git commit --amend -m "..."</code></td></tr>
+      <tr><td>Quero refazer o último commit (não enviado)</td><td><code>git reset --soft HEAD~1</code></td></tr>
+      <tr><td>Quero jogar fora commits locais (não enviados)</td><td><code>git reset --hard HEAD~N</code></td></tr>
+      <tr><td>Preciso desfazer um commit que já está no GitHub</td><td><code>git revert hash</code></td></tr>
+      <tr><td>Quero apagar arquivos lixo não rastreados</td><td><code>git clean -n</code> e depois <code>git clean -fd</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 7</div><p>Faça um commit de propósito com uma mensagem errada e corrija com <code>--amend</code>. Depois faça mais dois commits e desfaça-os com <code>git reset --soft HEAD~2</code>: confira com <code>git status</code> que as mudanças continuam preparadas. Por fim, crie um commit "quebrado" e desfaça-o com <code>git revert</code>.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-07" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 08 ============ -->
+<section class="aula" id="aula-08" data-nav=".gitignore">
+  <div class="aula-head"><span class="aula-tag">Aula 08</span><h2>O arquivo .gitignore</h2></div>
+  <p class="aula-goal">Ensinar o Git a ignorar o que não deve ser versionado.</p>
+
+  <p>Nem tudo deve ir para o repositório. Dependências que podem ser baixadas de novo (<code>node_modules</code>), arquivos compilados, logs, configurações do seu editor e, principalmente, <strong>senhas e chaves</strong> (<code>.env</code>). Para isso existe o <code>.gitignore</code>: um arquivo de texto na raiz do projeto com uma regra por linha.</p>
+  <pre class="term" data-title=".gitignore">
+# dependências
+node_modules/
+vendor/
+
+# variáveis de ambiente e segredos
+.env
+.env.*
+# o ! cria uma exceção: ESTE arquivo será versionado
+!.env.example
+
+# builds e arquivos gerados
+dist/
+build/
+*.pyc
+__pycache__/
+
+# logs
+*.log
+
+# arquivos do sistema (macOS e Windows) e de editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# só na raiz do projeto
+/config-local.json
+
+# em qualquer nível de pasta
+**/temp/
+</pre>
+  <div class="tbl"><table>
+    <thead><tr><th>Padrão</th><th>Significa</th></tr></thead>
+    <tbody>
+      <tr><td><code>*.log</code></td><td>Qualquer arquivo terminado em .log</td></tr>
+      <tr><td><code>pasta/</code></td><td>Uma pasta inteira (com tudo dentro)</td></tr>
+      <tr><td><code>/arquivo</code></td><td>Só na raiz do projeto</td></tr>
+      <tr><td><code>**/nome</code></td><td>Em qualquer subpasta</td></tr>
+      <tr><td><code>!arquivo</code></td><td>Exceção: não ignorar este</td></tr>
+      <tr><td><code>#</code></td><td>Comentário (só no início da linha)</td></tr>
+    </tbody>
+  </table></div>
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div><div class="ttl">Comentário sempre em linha própria</div><p>No <code>.gitignore</code>, o <code>#</code> só vira comentário quando é o primeiro caractere da linha. Uma linha como <code>.env # segredos</code> faz o Git procurar um arquivo chamado literalmente ".env # segredos", e o seu <code>.env</code> não é ignorado.</p></div>
+  </div>
+
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div><div class="ttl">"Coloquei no .gitignore e continua aparecendo!"</div><p>O <code>.gitignore</code> só vale para arquivos que <strong>ainda não são rastreados</strong>. Se o arquivo já foi comitado antes, tire-o do rastreamento:</p>
+    <pre class="term" data-title="Terminal">
+$ git rm --cached .env
+$ git commit -m "Remove .env do repositório"
+</pre></div>
+  </div>
+
+  <h4>Um .gitignore global para o seu computador</h4>
+  <p>Arquivos do seu sistema e editor (como <code>.DS_Store</code> ou <code>Thumbs.db</code>) podem ir num ignore global, valendo para todos os projetos:</p>
+  <div class="osgroup">
+    <div class="os" data-os="win"><pre class="term" data-title="Git Bash">
+$ echo "Thumbs.db" >> ~/.gitignore_global
+$ echo "desktop.ini" >> ~/.gitignore_global
+$ git config --global core.excludesfile ~/.gitignore_global
+</pre></div>
+    <div class="os" data-os="linux"><pre class="term" data-title="Terminal">
+$ echo "*~" >> ~/.gitignore_global
+$ echo ".directory" >> ~/.gitignore_global
+$ git config --global core.excludesfile ~/.gitignore_global
+</pre></div>
+    <div class="os" data-os="mac"><pre class="term" data-title="Terminal">
+$ echo ".DS_Store" >> ~/.gitignore_global
+$ git config --global core.excludesfile ~/.gitignore_global
+</pre></div>
+  </div>
+  <pre class="term" data-title="Terminal">
+# descobre qual regra está ignorando um arquivo
+$ git check-ignore -v debug.log
+.gitignore:14:*.log    debug.log
+</pre>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">Não precisa escrever do zero</div><p>Ao criar um repositório no GitHub, há a opção <em>Add .gitignore</em> com modelos prontos para Node, Python, Java etc. O repositório público <strong>github/gitignore</strong> reúne esses modelos.</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 8</div><p>Crie um arquivo <code>.env</code> com <code>SENHA=123</code> e uma pasta <code>logs/</code> com um arquivo dentro. Escreva um <code>.gitignore</code> que ignore os dois, comite o <code>.gitignore</code> e confirme com <code>git status</code> que eles sumiram da lista.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-08" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 09 ============ -->
+<section class="aula" id="aula-09" data-nav="Branches">
+  <div class="aula-head"><span class="aula-tag">Aula 09</span><h2>Branches: universos paralelos do seu projeto</h2></div>
+  <p class="aula-goal">Criar, trocar, renomear e apagar branches sem medo.</p>
+
+  <p>Imagina que seu site está funcionando e você quer testar um layout novo. Se mexer direto na <code>main</code> e der errado, quebrou o site. A solução é criar uma <strong>branch</strong> (ramificação): uma linha do tempo paralela onde você experimenta à vontade.</p>
+  <figure class="fig">
+    <div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"main","t":"C3"},{"id":"f1","x":2,"y":1,"k":"feat","t":"F1"},{"id":"f2","x":3,"y":1,"k":"feat","t":"F2"}],"edges":[["a","b"],["b","c"],["b","f1"],["f1","f2"]],"refs":[{"at":"c","text":"main","pos":"top"},{"at":"f2","text":"novo-layout","pos":"bottom"},{"at":"f2","text":"HEAD","kind":"head","pos":"bottom"}]}'></div>
+    <figcaption>A branch <code>novo-layout</code> nasceu de C2. Os commits F1 e F2 não afetam a <code>main</code>.</figcaption>
+  </figure>
+  <p>E a melhor parte: criar uma branch no Git é <span class="mk">instantâneo e não ocupa espaço</span>. Ela é só uma etiqueta apontando para um commit. Por isso o normal é criar uma branch para cada funcionalidade ou correção.</p>
+
+  <h3><svg class="ic"><use href="#i-branch"/></svg>Comandos de branch</h3>
+  <pre class="term" data-title="Terminal">
+# listar
+$ git branch               # branches locais (* marca a atual)
+$ git branch -v            # com o último commit de cada uma
+$ git branch -a            # locais + remotas
+$ git branch -vv           # mostra qual branch remota cada uma acompanha
+
+# criar
+$ git branch novo-layout           # cria (mas continua na atual)
+$ git switch novo-layout           # muda para ela
+$ git switch -c novo-layout        # cria E muda (o mais usado!)
+$ git switch -c hotfix 8b21e07     # cria a partir de um commit específico
+
+# navegar
+$ git switch main                  # volta para a main
+$ git switch -                     # volta para a branch anterior
+
+# renomear e apagar
+$ git branch -m nome-novo          # renomeia a branch atual
+$ git branch -m antigo novo        # renomeia outra branch
+$ git branch -d novo-layout        # apaga (só se já foi mesclada)
+$ git branch -D experimento        # força apagar, mesmo sem merge
+
+# quais já foram mescladas na atual?
+$ git branch --merged
+$ git branch --no-merged
+</pre>
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div><div class="ttl">E o git checkout?</div><p>Antes do <code>switch</code> existir, tudo era feito com <code>checkout</code>: <code>git checkout nome</code> troca de branch e <code>git checkout -b nome</code> cria e troca. Você vai encontrar isso em muito tutorial e funciona perfeitamente. O <code>switch</code> só deixa a intenção mais clara.</p></div>
+  </div>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">Dê nomes que contam uma história</div><p>Padrões comuns: <code>feature/carrinho-de-compras</code>, <code>fix/erro-no-login</code>, <code>docs/atualiza-readme</code>, <code>hotfix/pagamento-pix</code>. Sem espaços nem acentos.</p></div>
+  </div>
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div><div class="ttl">Trocar de branch com mudanças pendentes</div><p>Se você tem alterações não comitadas que conflitam com a outra branch, o Git não deixa trocar. Comite antes, ou guarde temporariamente com <code>git stash</code> (Aula 15).</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 9</div><p>Crie a branch <code>feature/rodape</code>, adicione um rodapé no <code>index.html</code> e faça dois commits. Volte para a <code>main</code> e abra o arquivo: o rodapé sumiu! Volte para a feature e ele reaparece. Termine com <code>git log --oneline --graph --all</code>.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-09" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 10 ============ -->
+<section class="aula" id="aula-10" data-nav="Merge e conflitos">
+  <div class="aula-head"><span class="aula-tag">Aula 10</span><h2>Merge e conflitos: juntando os universos</h2></div>
+  <p class="aula-goal">Mesclar branches e resolver conflitos com calma.</p>
+
+  <p>Terminou a funcionalidade na branch? Hora de trazer ela para a <code>main</code>. A regra de ouro: <strong>vá para a branch que vai RECEBER as mudanças</strong> e depois peça o merge.</p>
+  <pre class="term" data-title="Terminal">
+$ git switch main
+$ git merge feature/rodape
+</pre>
+
+  <h3><svg class="ic"><use href="#i-layers"/></svg>Os dois tipos de merge</h3>
+  <h4>1. Fast-forward (avanço rápido)</h4>
+  <p>Se a <code>main</code> não andou desde que a branch foi criada, o Git só "empurra" a etiqueta <code>main</code> para frente. Nenhum commit novo é criado.</p>
+  <figure class="fig">
+    <div class="duo">
+      <div class="side"><h5>Antes</h5><div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"feat","t":"F1"},{"id":"d","x":3,"y":0,"k":"feat","t":"F2"}],"edges":[["a","b"],["b","c"],["c","d"]],"refs":[{"at":"b","text":"main","pos":"top"},{"at":"d","text":"feature","pos":"top"}]}'></div></div>
+      <div class="side"><h5>Depois</h5><div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"feat","t":"F1"},{"id":"d","x":3,"y":0,"k":"feat","t":"F2"}],"edges":[["a","b"],["b","c"],["c","d"]],"refs":[{"at":"d","text":"main","pos":"top"},{"at":"d","text":"feature","pos":"bottom"}]}'></div></div>
+    </div>
+    <figcaption>No fast-forward a <code>main</code> só avança até F2.</figcaption>
+  </figure>
+
+  <h4>2. Merge de três vias (merge commit)</h4>
+  <p>Se as duas branches andaram, o Git cria um <strong>commit de merge</strong> com dois pais, juntando as duas histórias.</p>
+  <figure class="fig">
+    <div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"main","t":"C3"},{"id":"d","x":3,"y":0,"k":"main","t":"C4"},{"id":"f1","x":2,"y":1,"k":"feat","t":"F1"},{"id":"f2","x":3,"y":1,"k":"feat","t":"F2"},{"id":"m","x":4,"y":0,"k":"merge","t":"M"}],"edges":[["a","b"],["b","c"],["c","d"],["d","m"],["b","f1"],["f1","f2"],["f2","m"]],"refs":[{"at":"m","text":"main","pos":"top"},{"at":"m","text":"HEAD","kind":"head","pos":"top"},{"at":"f2","text":"feature","pos":"bottom"}]}'></div>
+    <figcaption>O commit M une as duas linhas do tempo.</figcaption>
+  </figure>
+  <pre class="term" data-title="Terminal">
+$ git merge feature                 # merge normal
+$ git merge --no-ff feature         # força criar o commit de merge (registra que houve uma branch)
+$ git merge --squash feature        # junta TODOS os commits da branch em um só, para você comitar
+$ git commit -m "Adiciona rodapé"   # (necessário depois do --squash)
+$ git merge --abort                 # cancela um merge em andamento
+</pre>
+
+  <h3><svg class="ic"><use href="#i-alert"/></svg>Conflitos: não entre em pânico!</h3>
+  <p>Um conflito acontece quando <strong>as duas branches mudaram a mesma linha do mesmo arquivo</strong>. O Git não tem como adivinhar qual versão está certa, então ele para e pede a sua ajuda. É normal, acontece todo dia em qualquer empresa.</p>
+  <pre class="term" data-title="Terminal">
+$ git merge feature/titulo
+Auto-merging index.html
+CONFLICT (content): Merge conflict in index.html
+Automatic merge failed; fix conflicts and then commit the result.
+
+$ git status
+You have unmerged paths.
+Unmerged paths:
+        both modified:   index.html
+</pre>
+  <p>Abra o arquivo e você vai ver isso aqui:</p>
+  <pre class="term" data-title="index.html">
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+&lt;h1&gt;Bem-vindo ao meu portfólio&lt;/h1&gt;
+=======
+&lt;h1&gt;Olá! Eu sou a Ana&lt;/h1&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/titulo
+</pre>
+  <ul class="list">
+    <li>Entre <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> e <code>=======</code>: a versão da branch em que você está (a <code>main</code>).</li>
+    <li>Entre <code>=======</code> e <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>: a versão que está chegando.</li>
+  </ul>
+  <h4>Como resolver, passo a passo</h4>
+  <ol class="list">
+    <li>Edite o arquivo deixando o conteúdo final do jeito certo (uma versão, a outra ou uma mistura das duas).</li>
+    <li><strong>Apague as linhas de marcação</strong> <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> e <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+    <li>Marque como resolvido com <code>git add</code>.</li>
+    <li>Finalize com <code>git commit</code>.</li>
+  </ol>
+  <pre class="term" data-title="Terminal">
+$ git add index.html
+$ git commit -m "Mescla feature/titulo resolvendo conflito no título"
+
+# atalhos: ficar inteiramente com uma das versões de um arquivo
+$ git checkout --ours index.html     # mantém a versão da branch atual
+$ git checkout --theirs index.html   # mantém a versão que está chegando
+
+# lista só os arquivos ainda em conflito
+$ git diff --name-only --diff-filter=U
+</pre>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">O VS Code resolve isso com cliques</div><p>Ao abrir um arquivo em conflito no VS Code, aparecem botões acima de cada trecho: <em>Accept Current Change</em>, <em>Accept Incoming Change</em>, <em>Accept Both Changes</em>. Também dá para usar <code>git mergetool</code> com a ferramenta que você preferir.</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 10</div><p>Provoque um conflito de propósito: crie a branch <code>titulo-novo</code> e mude o <code>&lt;h1&gt;</code>. Volte para a <code>main</code> e mude o mesmo <code>&lt;h1&gt;</code> de outro jeito. Comite nas duas e faça o merge. Resolva o conflito juntando as duas ideias.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-10" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 11 ============ -->
+<section class="aula" id="aula-11" data-nav="GitHub: conta e acesso">
+  <div class="aula-head"><span class="aula-tag">Aula 11</span><h2>GitHub: criando a conta e se autenticando</h2></div>
+  <p class="aula-goal">Deixar seu computador autorizado a enviar código para o GitHub.</p>
+
+  <h3><svg class="ic"><use href="#i-users"/></svg>Criando a conta</h3>
+  <ol class="list">
+    <li>Acesse <strong>github.com</strong> e clique em <em>Sign up</em>.</li>
+    <li>Use o <strong>mesmo e-mail</strong> que você configurou no <code>git config user.email</code>.</li>
+    <li>Escolha um nome de usuário profissional: ele vira o endereço do seu portfólio (<code>github.com/seu-usuario</code>).</li>
+    <li>Ative a <strong>autenticação em dois fatores (2FA)</strong> em <em>Settings → Password and authentication</em>. O GitHub passou a exigir o 2FA das contas que contribuem com código, então é melhor já deixar ativado.</li>
+  </ol>
+
+  <div class="call danger">
+    <div class="ico"><svg class="ic"><use href="#i-stop"/></svg></div>
+    <div><div class="ttl">Sua senha do GitHub NÃO funciona no terminal</div><p>Desde 2021 o GitHub não aceita a senha da conta para operações do Git. Se o terminal pedir senha e você digitar a do site, vai dar <em>Authentication failed</em>. Você precisa de uma das três formas abaixo.</p></div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><h4><svg class="ic"><use href="#i-key"/></svg>Opção A: HTTPS</h4><p>Com o Git Credential Manager ou o GitHub CLI. Abre o navegador para você logar. <strong>Mais fácil para iniciantes.</strong></p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-key"/></svg>Opção B: SSH</h4><p>Uma chave criptográfica guardada no seu computador. Configura uma vez e nunca mais pede nada. <strong>Preferida por desenvolvedores.</strong></p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-key"/></svg>Opção C: Token</h4><p>Um <em>Personal Access Token</em> gerado no site e usado no lugar da senha. Útil em servidores e automações.</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-key"/></svg>Opção A: HTTPS com login pelo navegador</h3>
+  <div class="osgroup">
+    <div class="os" data-os="win"><p>Se você instalou o Git com o <strong>Git Credential Manager</strong> (padrão do instalador), não precisa fazer nada agora. No primeiro <code>git push</code>, vai abrir uma janela para você entrar no GitHub pelo navegador, e o Windows guarda a credencial.</p>
+    <p>Prefere o GitHub CLI? Instale e faça login:</p>
+    <pre class="term" data-title="PowerShell">
+$ winget install --id GitHub.cli
+$ gh auth login
+</pre></div>
+    <div class="os" data-os="linux"><p>O jeito mais simples é o <strong>GitHub CLI</strong> (<code>gh</code>). Instale pelo gerenciador da sua distro (no Ubuntu/Debian, <code>sudo apt install gh</code>; em versões mais antigas siga as instruções em <strong>cli.github.com</strong>) e rode:</p>
+    <pre class="term" data-title="Terminal">
+$ gh auth login
+? Where do you use GitHub? GitHub.com
+? What is your preferred protocol for Git operations? HTTPS
+? Authenticate Git with your GitHub credentials? Yes
+? How would you like to authenticate GitHub CLI? Login with a web browser
+</pre></div>
+    <div class="os" data-os="mac"><p>Instale o GitHub CLI com o Homebrew e faça login. As credenciais ficam no Keychain do macOS.</p>
+    <pre class="term" data-title="Terminal">
+$ brew install gh
+$ gh auth login
+</pre></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-key"/></svg>Opção B: SSH (passo a passo)</h3>
+  <h4>1. Gere a chave (igual em todos os sistemas)</h4>
+  <pre class="term" data-title="Terminal">
+$ ssh-keygen -t ed25519 -C "ana@exemplo.com"
+Enter file in which to save the key: [Enter para aceitar o padrão]
+Enter passphrase: [uma senha para proteger a chave, recomendado]
+</pre>
+  <p>Isso cria dois arquivos na pasta <code>~/.ssh</code>: <code>id_ed25519</code> (a chave <strong>privada</strong>, que nunca sai do seu computador) e <code>id_ed25519.pub</code> (a chave <strong>pública</strong>, que você vai entregar ao GitHub).</p>
+
+  <h4>2. Coloque a chave no agente e copie a pública</h4>
+  <div class="osgroup">
+    <div class="os" data-os="win"><pre class="term" data-title="Git Bash">
+$ eval "$(ssh-agent -s)"
+$ ssh-add ~/.ssh/id_ed25519
+$ clip &lt; ~/.ssh/id_ed25519.pub     # copia para a área de transferência
+</pre>
+    <p>Quer que o agente inicie sozinho com o Windows? No <strong>PowerShell como Administrador</strong>:</p>
+    <pre class="term" data-title="PowerShell (Admin)">
+$ Get-Service ssh-agent | Set-Service -StartupType Automatic
+$ Start-Service ssh-agent
+$ ssh-add $env:USERPROFILE\.ssh\id_ed25519
+</pre>
+    <p>Atenção: o Git para Windows usa, por padrão, o SSH que vem junto com ele, e não o do Windows. Para o Git aproveitar esse agente do Windows, diga a ele qual SSH usar:</p>
+    <pre class="term" data-title="Git Bash">
+$ git config --global core.sshCommand "C:/Windows/System32/OpenSSH/ssh.exe"
+</pre></div>
+    <div class="os" data-os="linux"><pre class="term" data-title="Terminal">
+$ eval "$(ssh-agent -s)"
+$ ssh-add ~/.ssh/id_ed25519
+$ cat ~/.ssh/id_ed25519.pub        # selecione e copie a saída
+
+# ou, se tiver o xclip instalado:
+$ xclip -sel clip &lt; ~/.ssh/id_ed25519.pub
+</pre></div>
+    <div class="os" data-os="mac"><p>Primeiro crie (ou edite) o arquivo <code>~/.ssh/config</code> com este conteúdo, para o macOS guardar a senha da chave no Keychain:</p>
+    <pre class="term" data-title="~/.ssh/config">
+Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+</pre>
+    <pre class="term" data-title="Terminal">
+$ eval "$(ssh-agent -s)"
+$ ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+$ pbcopy &lt; ~/.ssh/id_ed25519.pub   # copia para a área de transferência
+</pre></div>
+  </div>
+
+  <h4>3. Cadastre no GitHub e teste</h4>
+  <p>No GitHub: foto de perfil → <em>Settings</em> → <em>SSH and GPG keys</em> → <em>New SSH key</em>. Dê um nome (ex.: "Notebook pessoal"), cole a chave pública e salve. Depois teste:</p>
+  <pre class="term" data-title="Terminal">
+$ ssh -T git@github.com
+Hi ana-souza! You've successfully authenticated, but GitHub does not provide shell access.
+</pre>
+  <p>Apareceu o seu usuário? Perfeito! A partir de agora use as URLs no formato SSH: <code>git@github.com:usuario/repo.git</code>.</p>
+  <div class="call danger">
+    <div class="ico"><svg class="ic"><use href="#i-stop"/></svg></div>
+    <div><div class="ttl">Nunca compartilhe a chave privada</div><p>O arquivo <strong>sem</strong> <code>.pub</code> é como a chave da sua casa. Não mande por e-mail, não coloque em repositório, não cole em lugar nenhum.</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 11</div><p>Crie sua conta no GitHub, ative o 2FA e configure a autenticação SSH. Só passe para a próxima aula quando o <code>ssh -T git@github.com</code> responder com o seu nome de usuário (ou o <code>gh auth status</code> mostrar que você está logado).</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-11" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 12 ============ -->
+<section class="aula" id="aula-12" data-nav="Repositórios remotos">
+  <div class="aula-head"><span class="aula-tag">Aula 12</span><h2>Repositórios remotos: push, pull, fetch e clone</h2></div>
+  <p class="aula-goal">Sincronizar seu computador com o GitHub nos dois sentidos.</p>
+
+  <figure class="fig">
+    <div class="scroll-x">
+    <svg viewBox="0 0 860 330" width="860" role="img" aria-label="Seu computador e o GitHub, com push, fetch, pull e clone">
+      <defs>
+        <marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-fw"/></marker>
+        <marker id="ar3g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-gr"/></marker>
+        <marker id="ar3p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-pu"/></marker>
+      </defs>
+      <rect class="d-box" x="10" y="20" width="330" height="296" rx="18" stroke-dasharray="6 5" style="fill:none"/>
+      <text class="d-label" x="175" y="46">SEU COMPUTADOR</text>
+      <rect class="d-box" x="40" y="66" width="270" height="62" rx="12"/><text class="d-t" x="175" y="94">Diretório de trabalho</text><text class="d-s" x="175" y="114">os arquivos que você edita</text>
+      <rect class="d-box" x="40" y="146" width="270" height="62" rx="12"/><text class="d-t" x="175" y="174">Staging</text><text class="d-s" x="175" y="194">preparado para o commit</text>
+      <rect class="d-box hi" x="40" y="226" width="270" height="70" rx="12"/><text class="d-t" x="175" y="254">Repositório local</text><text class="d-s" x="175" y="274">main · origin/main</text>
+      <rect class="d-box hi" x="560" y="120" width="290" height="110" rx="18"/>
+      <g transform="translate(693,134)"><use href="#i-cloud" width="24" height="24" class="d-ic"/></g>
+      <text class="d-t" x="705" y="186">GitHub</text><text class="d-s" x="705" y="206">remoto "origin"</text>
+      <path class="d-arrow a-fw" d="M312 250 C440 250 470 200 556 190" marker-end="url(#ar3)"/>
+      <text class="d-cmd d-fw" x="436" y="232">git push</text>
+      <path class="d-arrow a-gr" d="M556 214 C470 240 420 280 314 280" marker-end="url(#ar3g)"/>
+      <text class="d-cmd d-gr" x="436" y="300">git fetch</text>
+      <path class="d-arrow a-pu" d="M556 150 C470 120 420 100 314 98" marker-end="url(#ar3p)"/>
+      <text class="d-cmd d-pu" x="436" y="96">git pull</text>
+      <text class="d-s" x="436" y="116">= fetch + merge</text>
+    </svg>
+    </div>
+    <figcaption><code>fetch</code> só baixa o histórico. <code>pull</code> baixa e já mescla nos seus arquivos. <code>push</code> envia seus commits.</figcaption>
+  </figure>
+
+  <h3><svg class="ic"><use href="#i-rocket"/></svg>Cenário 1: já tenho um projeto local e quero subir para o GitHub</h3>
+  <ol class="list">
+    <li>No GitHub, clique em <strong>+</strong> → <em>New repository</em>. Dê o nome <code>meu-site</code>.</li>
+    <li><strong>Não marque</strong> README, .gitignore nem licença (seu projeto já tem histórico; isso evita conflito no primeiro envio).</li>
+    <li>Copie a URL e rode no seu projeto:</li>
+  </ol>
+  <pre class="term" data-title="Terminal">
+$ git remote add origin git@github.com:ana-souza/meu-site.git
+$ git branch -M main                # garante que a branch se chama main
+$ git push -u origin main
+</pre>
+  <p>O <code>-u</code> (ou <code>--set-upstream</code>) liga sua <code>main</code> local à <code>main</code> do GitHub. Só precisa dele na primeira vez. Depois disso é só <code>git push</code> e <code>git pull</code>.</p>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">Atalho com o GitHub CLI</div><p>Cria o repositório no GitHub, conecta e envia, tudo num comando só:</p>
+    <pre class="term" data-title="Terminal">
+$ gh repo create meu-site --public --source=. --remote=origin --push
+</pre></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-cloud"/></svg>Cenário 2: o projeto já existe no GitHub e quero baixar</h3>
+  <pre class="term" data-title="Terminal">
+$ git clone git@github.com:ana-souza/meu-site.git
+$ git clone https://github.com/ana-souza/meu-site.git outro-nome   # em outra pasta
+$ git clone --depth 1 URL          # só o último commit (rápido para repos gigantes)
+$ git clone -b develop URL         # já numa branch específica
+</pre>
+  <p>O <code>clone</code> baixa o histórico completo e já configura o remoto <code>origin</code> automaticamente.</p>
+
+  <h3><svg class="ic"><use href="#i-layers"/></svg>O dia a dia com remotos</h3>
+  <pre class="term" data-title="Terminal">
+# começar o dia: pegar o que a equipe enviou
+$ git pull
+
+# enviar seus commits
+$ git push
+
+# enviar uma branch nova pela primeira vez
+$ git push -u origin feature/contato
+
+# ver o que mudou no remoto ANTES de mesclar
+$ git fetch
+$ git log main..origin/main --oneline
+$ git merge origin/main
+
+# pull que reaplica seus commits por cima (histórico linear)
+$ git pull --rebase
+
+# limpa referências de branches que foram apagadas no GitHub
+$ git fetch --prune
+
+# apagar uma branch no GitHub
+$ git push origin --delete feature/contato
+</pre>
+
+  <h4>Gerenciando remotos</h4>
+  <pre class="term" data-title="Terminal">
+$ git remote -v                                  # lista os remotos e URLs
+$ git remote show origin                         # detalhes do remoto
+$ git remote rename origin github                # renomeia
+$ git remote remove github                       # remove
+$ git remote set-url origin git@github.com:ana-souza/novo-nome.git   # troca a URL
+</pre>
+
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div><div class="ttl">"! [rejected] ... (fetch first)"</div><p>Esse erro significa que tem commits no GitHub que você ainda não tem. O Git se recusa a sobrescrever. A solução é trazer primeiro e enviar depois:</p>
+    <pre class="term" data-title="Terminal">
+$ git pull --rebase
+$ git push
+</pre></div>
+  </div>
+  <div class="call danger">
+    <div class="ico"><svg class="ic"><use href="#i-stop"/></svg></div>
+    <div><div class="ttl">git push --force</div><p>O <code>--force</code> sobrescreve o histórico do GitHub e pode <strong>apagar o trabalho de outras pessoas</strong>. Se realmente precisar (por exemplo, depois de um rebase na sua própria branch), use <code>git push --force-with-lease</code>, que recusa o envio se alguém tiver enviado algo que você ainda não viu. E nunca force na <code>main</code> compartilhada.</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 12</div><p>Suba seu <code>meu-site</code> para o GitHub. Depois, edite o <code>README.md</code> <strong>pelo site do GitHub</strong> (ícone de lápis) e faça o commit por lá. Volte ao terminal, rode <code>git fetch</code>, veja a diferença com <code>git log main..origin/main</code> e então rode <code>git pull</code>.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-12" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 13 ============ -->
+<section class="aula" id="aula-13" data-nav="Colaboração no GitHub">
+  <div class="aula-head"><span class="aula-tag">Aula 13</span><h2>Colaboração: fork, Pull Request, review e issues</h2></div>
+  <p class="aula-goal">Trabalhar em equipe e contribuir com projetos open source.</p>
+
+  <h3><svg class="ic"><use href="#i-branch"/></svg>O GitHub Flow</h3>
+  <p>É o fluxo de trabalho mais usado no mundo. Simples e poderoso:</p>
+  <ol class="flow">
+    <li><b>Crie uma branch</b><span>a partir da <code>main</code> atualizada</span></li>
+    <li><b>Faça commits</b><span>pequenos e com boas mensagens</span></li>
+    <li><b>Abra um Pull Request</b><span>pedindo para mesclar na <code>main</code></span></li>
+    <li><b>Revisão</b><span>colegas comentam, você ajusta com novos commits</span></li>
+    <li><b>Merge</b><span>aprovado, a branch entra na <code>main</code></span></li>
+    <li><b>Limpeza</b><span>apague a branch e atualize sua <code>main</code></span></li>
+  </ol>
+
+  <h3><svg class="ic"><use href="#i-users"/></svg>Pull Request (PR) na prática</h3>
+  <p>Um <strong>Pull Request</strong> é um pedido: "por favor, puxem as mudanças da minha branch para a <code>main</code>". É ali que acontece a conversa, a revisão de código e os testes automáticos.</p>
+  <pre class="term" data-title="Terminal">
+$ git switch main
+$ git pull
+$ git switch -c feature/pagina-contato
+# ... edita, add, commit ...
+$ git push -u origin feature/pagina-contato
+</pre>
+  <p>Depois do push, o GitHub mostra um botão amarelo <em>Compare &amp; pull request</em>. Clique, escreva um título claro, explique <strong>o que</strong> mudou e <strong>por quê</strong>, e clique em <em>Create pull request</em>. Ou pelo terminal:</p>
+  <pre class="term" data-title="Terminal">
+$ gh pr create --fill                  # usa as mensagens dos commits
+$ gh pr create --title "Adiciona página de contato" --body "Fecha #12"
+$ gh pr list                           # PRs abertos
+$ gh pr checkout 42                    # baixa a branch do PR 42 para revisar
+$ gh pr merge 42 --squash --delete-branch
+</pre>
+  <h4>As três formas de mesclar um PR no GitHub</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>Botão</th><th>O que faz</th><th>Quando usar</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Create a merge commit</strong></td><td>Mantém todos os commits e cria um commit de merge</td><td>Quando o histórico detalhado importa</td></tr>
+      <tr><td><strong>Squash and merge</strong></td><td>Junta todos os commits do PR em um só</td><td>O mais comum: deixa a <code>main</code> limpa</td></tr>
+      <tr><td><strong>Rebase and merge</strong></td><td>Reaplica os commits em linha, sem commit de merge</td><td>Times que preferem histórico linear</td></tr>
+    </tbody>
+  </table></div>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">Palavras mágicas</div><p>Escreva <code>Fixes #12</code> ou <code>Closes #12</code> na descrição do PR: quando ele for mesclado, a issue 12 é fechada automaticamente.</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-flag"/></svg>Issues</h3>
+  <p><strong>Issues</strong> são a lista de tarefas do projeto: bugs, ideias, melhorias. Cada uma ganha um número (<code>#12</code>), pode ter responsável, etiquetas (<em>labels</em>) e marco (<em>milestone</em>). Use também os <em>Projects</em> do GitHub para montar um quadro Kanban.</p>
+  <pre class="term" data-title="Terminal">
+$ gh issue create --title "Botão de enviar não funciona no celular" --label bug
+$ gh issue list
+$ gh issue view 12
+</pre>
+
+  <h3><svg class="ic"><use href="#i-star"/></svg>Fork: contribuindo com projetos dos outros</h3>
+  <p>Você não tem permissão para enviar direto para o repositório de outra pessoa. Então você faz um <strong>fork</strong>: uma cópia do repositório na <strong>sua</strong> conta. Trabalha nela e abre um PR para o original.</p>
+  <ol class="list">
+    <li>No repositório original, clique em <em>Fork</em>.</li>
+    <li>Clone o <strong>seu</strong> fork e adicione o original como <code>upstream</code>:</li>
+  </ol>
+  <pre class="term" data-title="Terminal">
+$ git clone git@github.com:ana-souza/projeto-legal.git
+$ cd projeto-legal
+$ git remote add upstream https://github.com/dono-original/projeto-legal.git
+$ git remote -v
+origin    git@github.com:ana-souza/projeto-legal.git (fetch)
+origin    git@github.com:ana-souza/projeto-legal.git (push)
+upstream  https://github.com/dono-original/projeto-legal.git (fetch)
+upstream  https://github.com/dono-original/projeto-legal.git (push)
+
+# trabalhe numa branch e envie para o SEU fork
+$ git switch -c fix/erro-de-digitacao
+$ git commit -am "Corrige erro de digitação na documentação"
+$ git push -u origin fix/erro-de-digitacao
+# agora abra o PR no GitHub, do seu fork para o original
+
+# manter seu fork atualizado com o original
+$ git switch main
+$ git fetch upstream
+$ git merge upstream/main
+$ git push origin main
+</pre>
+  <p>Atalho: no seu fork, o botão <em>Sync fork</em> faz essa atualização pelo site, ou <code>gh repo fork dono/projeto --clone</code> faz o fork e o clone de uma vez.</p>
+
+  <h3><svg class="ic"><use href="#i-book"/></svg>Arquivos que todo repositório deveria ter</h3>
+  <div class="cards">
+    <div class="card"><h4><svg class="ic"><use href="#i-file"/></svg>README.md</h4><p>A capa do projeto: o que é, como instalar, como usar, prints. Escrito em Markdown.</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-file"/></svg>LICENSE</h4><p>Diz o que os outros podem fazer com seu código (MIT, GPL, Apache...). Sem licença, ninguém pode reutilizar legalmente.</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-file"/></svg>.gitignore</h4><p>O que não deve ser versionado (Aula 08).</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-file"/></svg>CONTRIBUTING.md</h4><p>Regras para quem quer contribuir: padrões, como abrir PR, como rodar testes.</p></div>
+  </div>
+  <div class="call tip">
+    <div class="ico"><svg class="ic"><use href="#i-bulb"/></svg></div>
+    <div><div class="ttl">README de perfil</div><p>Crie um repositório com <strong>exatamente o mesmo nome do seu usuário</strong>. O README dele aparece no topo do seu perfil. É o seu cartão de visitas para recrutadores.</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 13</div><p>No seu <code>meu-site</code>, abra uma issue "Criar página de contato". Crie uma branch, implemente, envie e abra um PR com <code>Closes #1</code> na descrição. Mescle com <em>Squash and merge</em>, apague a branch e veja a issue fechar sozinha. Depois atualize sua <code>main</code> local.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-13" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 14 ============ -->
+<section class="aula" id="aula-14" data-nav="Rebase">
+  <div class="aula-head"><span class="aula-tag">Aula 14</span><h2>Rebase: reescrevendo a história com responsabilidade</h2></div>
+  <p class="aula-goal">Deixar o histórico linear e organizar commits antes de compartilhar.</p>
+
+  <p>O <code>rebase</code> faz o mesmo trabalho do merge (trazer mudanças de uma branch para outra), mas de um jeito diferente: ele <strong>pega seus commits e reaplica um por um em cima da outra branch</strong>, como se você tivesse começado o trabalho agora.</p>
+  <figure class="fig">
+    <div class="duo">
+      <div class="side"><h5>Antes</h5><div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"main","t":"C3"},{"id":"f1","x":2,"y":1,"k":"feat","t":"F1"},{"id":"f2","x":3,"y":1,"k":"feat","t":"F2"}],"edges":[["a","b"],["b","c"],["b","f1"],["f1","f2"]],"refs":[{"at":"c","text":"main","pos":"top"},{"at":"f2","text":"feature","pos":"bottom"}]}'></div></div>
+      <div class="side"><h5>Depois de git rebase main</h5><div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"main","t":"C3"},{"id":"f1","x":3,"y":0,"k":"feat","t":"F1&apos;"},{"id":"f2","x":4,"y":0,"k":"feat","t":"F2&apos;"},{"id":"g1","x":2,"y":1,"k":"ghost","t":"F1"},{"id":"g2","x":3,"y":1,"k":"ghost","t":"F2"}],"edges":[["a","b"],["b","c"],["c","f1"],["f1","f2"],["b","g1"],["g1","g2"]],"refs":[{"at":"c","text":"main","pos":"top"},{"at":"f2","text":"feature","pos":"top"}]}'></div></div>
+    </div>
+    <figcaption>Os commits F1 e F2 viram cópias novas (F1' e F2', com hashes novos) em cima de C3. As versões antigas são abandonadas.</figcaption>
+  </figure>
+  <pre class="term" data-title="Terminal">
+$ git switch feature
+$ git rebase main
+
+# se der conflito no meio do caminho:
+#   resolva o arquivo, depois
+$ git add arquivo-resolvido
+$ git rebase --continue
+
+$ git rebase --skip      # pula o commit problemático
+$ git rebase --abort     # desiste e volta tudo como estava
+
+# depois, a main pode receber a feature com um fast-forward
+$ git switch main
+$ git merge feature
+</pre>
+
+  <div class="call danger">
+    <div class="ico"><svg class="ic"><use href="#i-stop"/></svg></div>
+    <div><div class="ttl">A regra de ouro do rebase</div><p><strong>Nunca faça rebase de commits que já foram compartilhados e que outras pessoas estão usando</strong> (como a <code>main</code>). O rebase cria commits novos, e quem já tinha os antigos vai ter um histórico que não bate mais. Rebase é para arrumar o <em>seu</em> trabalho antes de compartilhar.</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-gear"/></svg>Rebase interativo: a sala de edição</h3>
+  <p>Com o <code>-i</code> você pode reordenar, juntar, renomear e apagar commits. Perfeito para limpar aquela sequência "teste", "agora vai", "corrige o corrige" antes de abrir um PR.</p>
+  <pre class="term" data-title="Terminal">
+$ git rebase -i HEAD~4
+</pre>
+  <p>Abre o editor com algo assim:</p>
+  <pre class="term" data-title="git-rebase-todo">
+pick 1a2b3c4 Adiciona formulário de contato
+pick 5d6e7f8 teste
+pick 9a0b1c2 corrige o corrige
+pick 3d4e5f6 Ajusta estilo do botão
+
+# Commands:
+# p, pick   = usa o commit como está
+# r, reword = usa o commit, mas edita a mensagem
+# e, edit   = para nesse commit para você alterar
+# s, squash = junta com o commit anterior (mantém as duas mensagens)
+# f, fixup  = junta com o anterior (descarta a mensagem deste)
+# d, drop   = remove o commit
+</pre>
+  <p>Troque <code>pick</code> pela ação desejada, salve e feche:</p>
+  <pre class="term" data-title="git-rebase-todo">
+pick 1a2b3c4 Adiciona formulário de contato
+fixup 5d6e7f8 teste
+fixup 9a0b1c2 corrige o corrige
+reword 3d4e5f6 Ajusta estilo do botão
+</pre>
+  <p>Resultado: dois commits limpos no lugar de quatro bagunçados. Se a branch já estava no GitHub (só você usando), envie com <code>git push --force-with-lease</code>.</p>
+
+  <h4>O truque do fixup automático</h4>
+  <pre class="term" data-title="Terminal">
+# achou um errinho que pertence a um commit antigo (1a2b3c4)?
+$ git add form.html
+$ git commit --fixup 1a2b3c4
+$ git rebase -i --autosquash main   # o Git já posiciona o fixup no lugar certo
+</pre>
+
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Merge</th><th>Rebase</th></tr></thead>
+    <tbody>
+      <tr><td>Histórico</td><td>Preserva tudo como aconteceu</td><td>Linear e limpo</td></tr>
+      <tr><td>Commits existentes</td><td>Não altera</td><td>Recria (hashes novos)</td></tr>
+      <tr><td>Seguro em branch compartilhada?</td><td class="y">Sim</td><td class="n">Não</td></tr>
+      <tr><td>Melhor uso</td><td>Integrar trabalho na <code>main</code></td><td>Atualizar e arrumar sua branch local</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 14</div><p>Crie uma branch e faça 4 commits pequenos com mensagens ruins. Use <code>git rebase -i HEAD~4</code> para transformá-los em 2 commits com mensagens boas. Confira com <code>git log --oneline</code>.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-14" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 15 ============ -->
+<section class="aula" id="aula-15" data-nav="Stash">
+  <div class="aula-head"><span class="aula-tag">Aula 15</span><h2>Stash: a gaveta de trabalho em andamento</h2></div>
+  <p class="aula-goal">Guardar alterações pela metade sem precisar comitar.</p>
+
+  <p>Situação real: você está no meio de uma funcionalidade e o chefe chega: "urgente, tem um bug em produção!". Seu código está pela metade, não dá para comitar. O que fazer? <strong>Guarda na gaveta!</strong></p>
+  <pre class="term" data-title="Terminal">
+$ git stash                              # guarda as alterações e limpa a área de trabalho
+$ git stash push -m "formulário pela metade"   # com uma descrição
+$ git stash -u                           # inclui arquivos novos (não rastreados)
+
+# ... vai para outra branch, corrige o bug, volta ...
+
+$ git stash list
+stash@{0}: On feature/contato: formulário pela metade
+stash@{1}: WIP on main: 3f9a1c2 Cria estrutura inicial
+
+$ git stash show -p stash@{0}            # vê o conteúdo
+$ git stash pop                          # devolve o último e remove da lista
+$ git stash apply stash@{1}              # devolve um específico e MANTÉM na lista
+$ git stash drop stash@{1}               # apaga um
+$ git stash clear                        # apaga todos
+$ git stash branch nova-branch           # cria uma branch a partir do stash
+$ git stash push -m "só o css" style.css # guarda apenas um arquivo
+</pre>
+  <div class="call ana">
+    <div class="ico"><svg class="ic"><use href="#i-eye"/></svg></div>
+    <div><div class="ttl">Analogia</div><p>O stash é uma <strong>pilha de pratos</strong>: o último que entra é o primeiro que sai (<code>stash@{0}</code>). O <code>pop</code> tira o prato de cima; o <code>apply</code> só olha e copia, deixando o prato lá.</p></div>
+  </div>
+  <div class="call warn">
+    <div class="ico"><svg class="ic"><use href="#i-alert"/></svg></div>
+    <div><div class="ttl">Não use o stash como depósito</div><p>Stash esquecido vira lixo que você não lembra o que era. Se o trabalho vai demorar, prefira um commit numa branch própria.</p></div>
+  </div>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 15</div><p>Edite dois arquivos, guarde com <code>git stash push -m "teste"</code>, troque para outra branch, faça um commit qualquer, volte e recupere com <code>git stash pop</code>.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-15" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 16 ============ -->
+<section class="aula" id="aula-16" data-nav="Tags e releases">
+  <div class="aula-head"><span class="aula-tag">Aula 16</span><h2>Tags, versões e releases</h2></div>
+  <p class="aula-goal">Marcar versões oficiais do seu projeto.</p>
+
+  <p>Uma <strong>tag</strong> é uma etiqueta fixa num commit. Diferente da branch, ela <strong>não anda</strong>. Serve para marcar marcos importantes, como "versão 1.0 que foi para produção".</p>
+
+  <h3><svg class="ic"><use href="#i-tag"/></svg>Versionamento Semântico (SemVer)</h3>
+  <p>O padrão do mercado é <code>MAJOR.MINOR.PATCH</code>, por exemplo <code>v2.4.1</code>:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Parte</th><th>Aumenta quando...</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>MAJOR</strong></td><td>Mudança que quebra compatibilidade</td><td><code>1.9.3 → 2.0.0</code></td></tr>
+      <tr><td><strong>MINOR</strong></td><td>Funcionalidade nova, compatível</td><td><code>2.0.0 → 2.1.0</code></td></tr>
+      <tr><td><strong>PATCH</strong></td><td>Correção de bug</td><td><code>2.1.0 → 2.1.1</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <pre class="term" data-title="Terminal">
+# tag anotada (recomendada: guarda autor, data e mensagem)
+$ git tag -a v1.0.0 -m "Primeira versão pública"
+
+# tag leve (só um nome apontando para o commit)
+$ git tag v1.0.0-rc1
+
+# marcar um commit antigo
+$ git tag -a v0.9.0 8b21e07 -m "Versão beta"
+
+$ git tag                       # lista
+$ git tag -l "v1.*"             # filtra
+$ git show v1.0.0               # detalhes
+$ git describe --tags           # "v1.0.0-3-gc4d0f55" = 3 commits depois da v1.0.0
+
+# tags NÃO sobem com git push normal!
+$ git push origin v1.0.0        # envia uma
+$ git push --tags               # envia todas
+$ git push --follow-tags        # envia commits + tags anotadas ligadas a eles
+
+# apagar
+$ git tag -d v1.0.0-rc1
+$ git push origin --delete v1.0.0-rc1
+
+# ver o código de uma versão antiga
+$ git switch --detach v1.0.0
+</pre>
+
+  <h3><svg class="ic"><use href="#i-rocket"/></svg>Releases no GitHub</h3>
+  <p>Uma <strong>Release</strong> é uma tag com página bonita no GitHub: notas da versão, arquivos para download e changelog. Crie em <em>Releases → Draft a new release</em>, ou pelo terminal:</p>
+  <pre class="term" data-title="Terminal">
+$ gh release create v1.0.0 --generate-notes
+$ gh release create v1.1.0 ./dist/app.zip --title "Versão 1.1" --notes "Novo modo escuro"
+</pre>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 16</div><p>Crie a tag anotada <code>v1.0.0</code> no seu site, envie para o GitHub e transforme-a numa Release com notas geradas automaticamente.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-16" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 17 ============ -->
+<section class="aula" id="aula-17" data-nav="Arsenal avançado">
+  <div class="aula-head"><span class="aula-tag">Aula 17</span><h2>Arsenal avançado</h2></div>
+  <p class="aula-goal">As ferramentas que separam quem usa Git de quem domina Git.</p>
+
+  <h3><svg class="ic"><use href="#i-life"/></svg>git reflog: o salva-vidas</h3>
+  <p>Fez um <code>reset --hard</code> errado? Apagou uma branch sem querer? Calma. O <strong>reflog</strong> registra <strong>todo lugar por onde o HEAD passou</strong>. Por padrão, as entradas ficam guardadas por 90 dias, e as de commits que ficaram sem nenhuma branch apontando para eles, por 30 dias. Então, se agir rápido, praticamente nada comitado se perde de verdade.</p>
+  <pre class="term" data-title="Terminal">
+$ git reflog
+e19a7b3 HEAD@{0}: reset: moving to HEAD~2
+a7c3d91 HEAD@{1}: commit: Adiciona galeria de fotos
+c4d0f55 HEAD@{2}: commit: Ajusta menu
+
+# volta para antes do desastre
+$ git reset --hard HEAD@{1}
+
+# ou recupera o commit numa branch nova
+$ git branch galeria-recuperada a7c3d91
+</pre>
+
+  <h3><svg class="ic"><use href="#i-star"/></svg>git cherry-pick: pegando um commit específico</h3>
+  <p>Precisa de só <strong>um</strong> commit de outra branch (por exemplo, uma correção), sem trazer o resto? Escolha a cereja do bolo:</p>
+  <figure class="fig">
+    <div class="graph scroll-x" data-spec='{"nodes":[{"id":"a","x":0,"y":0,"k":"main","t":"C1"},{"id":"b","x":1,"y":0,"k":"main","t":"C2"},{"id":"c","x":2,"y":0,"k":"main","t":"C3"},{"id":"p","x":3,"y":0,"k":"fix","t":"X&apos;"},{"id":"f1","x":1,"y":1,"k":"feat","t":"F1"},{"id":"f2","x":2,"y":1,"k":"fix","t":"X"},{"id":"f3","x":3,"y":1,"k":"feat","t":"F3"}],"edges":[["a","b"],["b","c"],["c","p"],["a","f1"],["f1","f2"],["f2","f3"]],"refs":[{"at":"p","text":"main","pos":"top"},{"at":"f3","text":"develop","pos":"bottom"}]}'></div>
+    <figcaption><code>git cherry-pick X</code> copia apenas o commit X para a <code>main</code>.</figcaption>
+  </figure>
+  <pre class="term" data-title="Terminal">
+$ git switch main
+$ git cherry-pick 9f8e7d6
+$ git cherry-pick -x 9f8e7d6        # anota na mensagem de onde veio
+$ git cherry-pick a1b2c3d..f4e5d6c  # um intervalo
+$ git cherry-pick --continue        # após resolver conflito
+$ git cherry-pick --abort
+</pre>
+
+  <h3><svg class="ic"><use href="#i-search"/></svg>git bisect: caçando o commit que criou o bug</h3>
+  <p>O sistema funcionava na v1.0 e agora, 200 commits depois, está quebrado. Testar um por um? Nada disso! O <code>bisect</code> faz uma <strong>busca binária</strong>: em vez de 200 testes, uns 8.</p>
+  <pre class="term" data-title="Terminal">
+$ git bisect start
+$ git bisect bad                 # a versão atual está com bug
+$ git bisect good v1.0.0         # nessa versão funcionava
+Bisecting: 100 revisions left to test after this (roughly 7 steps)
+
+# o Git te leva para um commit no meio. Teste e responda:
+$ git bisect good                # ou: git bisect bad
+# ... repita até ele dizer: "abc1234 is the first bad commit"
+
+$ git bisect reset               # volta para onde você estava
+
+# modo automático: o Git roda seus testes sozinho
+$ git bisect run npm test
+</pre>
+
+  <h3><svg class="ic"><use href="#i-folder"/></svg>git worktree: duas branches abertas ao mesmo tempo</h3>
+  <p>Em vez de fazer stash para trocar de branch, abra outra branch numa <strong>pasta separada</strong>, compartilhando o mesmo repositório:</p>
+  <pre class="term" data-title="Terminal">
+$ git worktree add ../meu-site-hotfix hotfix/pagamento
+$ git worktree add -b feature/blog ../meu-site-blog   # cria a branch junto
+$ git worktree list
+$ git worktree remove ../meu-site-hotfix
+</pre>
+
+  <h3><svg class="ic"><use href="#i-layers"/></svg>Submódulos: um repositório dentro do outro</h3>
+  <pre class="term" data-title="Terminal">
+$ git submodule add https://github.com/org/biblioteca.git libs/biblioteca
+$ git clone --recurse-submodules URL          # clona já com os submódulos
+$ git submodule update --init --recursive     # se esqueceu do --recurse-submodules
+$ git submodule update --remote               # atualiza para a versão mais nova
+</pre>
+
+  <h3><svg class="ic"><use href="#i-search"/></svg>git grep: busca turbinada</h3>
+  <pre class="term" data-title="Terminal">
+$ git grep "TODO"                 # busca nos arquivos rastreados
+$ git grep -n "apiKey"            # com número da linha
+$ git grep -c "console.log"       # conta por arquivo
+$ git grep "login" v1.0.0         # busca numa versão antiga
+</pre>
+
+  <h3><svg class="ic"><use href="#i-gear"/></svg>Aliases: crie seus próprios atalhos</h3>
+  <pre class="term" data-title="Terminal">
+$ git config --global alias.st "status -sb"
+$ git config --global alias.lg "log --oneline --graph --all --decorate"
+$ git config --global alias.last "log -1 HEAD --stat"
+$ git config --global alias.desfaz "reset --soft HEAD~1"
+
+$ git lg        # agora funciona!
+</pre>
+
+  <h3><svg class="ic"><use href="#i-gear"/></svg>Hooks: automações locais</h3>
+  <p>Hooks são scripts que o Git executa em momentos específicos. Ficam em <code>.git/hooks/</code>. Exemplo: impedir commits com <code>console.log</code> esquecido.</p>
+  <pre class="term" data-title=".git/hooks/pre-commit">
+#!/bin/sh
+if git diff --cached | grep -q "console.log"; then
+  echo "Ops! Você esqueceu um console.log. Commit cancelado."
+  exit 1
+fi
+</pre>
+  <div class="osgroup">
+    <div class="os" data-os="win"><p>No Windows, o Git Bash executa o hook normalmente. Basta salvar o arquivo <strong>sem extensão</strong> (nada de <code>pre-commit.txt</code>) com finais de linha LF.</p></div>
+    <div class="os" data-os="linux"><p>Dê permissão de execução:</p><pre class="term" data-title="Terminal">
+$ chmod +x .git/hooks/pre-commit
+</pre></div>
+    <div class="os" data-os="mac"><p>Dê permissão de execução:</p><pre class="term" data-title="Terminal">
+$ chmod +x .git/hooks/pre-commit
+</pre></div>
+  </div>
+  <p>Hooks em <code>.git/hooks</code> não vão para o GitHub. Para compartilhar com a equipe, use ferramentas como <strong>Husky</strong> (JavaScript) ou <strong>pre-commit</strong> (Python), ou aponte o Git para uma pasta versionada com <code>git config core.hooksPath .githooks</code>.</p>
+
+  <h3><svg class="ic"><use href="#i-key"/></svg>Commits assinados (selo "Verified")</h3>
+  <p>Qualquer um pode configurar <code>user.name</code> com o seu nome. Assinar commits prova que foi você. Dá para usar a mesma chave SSH da Aula 11:</p>
+  <pre class="term" data-title="Terminal">
+$ git config --global gpg.format ssh
+$ git config --global user.signingkey ~/.ssh/id_ed25519.pub
+$ git config --global commit.gpgsign true
+$ git config --global tag.gpgsign true
+</pre>
+  <p>Depois cadastre a mesma chave pública no GitHub em <em>SSH and GPG keys → New SSH key</em>, escolhendo o tipo <strong>Signing Key</strong>. Seus commits ganham o selo verde <em>Verified</em>.</p>
+
+  <h3><svg class="ic"><use href="#i-box"/></svg>Git LFS: arquivos grandes</h3>
+  <p>O Git não foi feito para vídeos, PSDs e datasets gigantes. O <strong>Git LFS</strong> guarda esses arquivos à parte e deixa só um "ponteiro" no repositório.</p>
+  <pre class="term" data-title="Terminal">
+$ git lfs install
+$ git lfs track "*.psd"
+$ git lfs track "videos/*.mp4"
+$ git add .gitattributes
+$ git commit -m "Configura Git LFS"
+</pre>
+
+  <h3><svg class="ic"><use href="#i-eye"/></svg>HEAD destacado (detached HEAD)</h3>
+  <p>Quando você faz <code>git switch --detach abc1234</code> ou <code>git checkout v1.0.0</code>, o HEAD aponta direto para um commit, e não para uma branch. Você pode olhar e testar à vontade, mas commits feitos aí ficam "soltos". Se quiser manter algo, crie uma branch:</p>
+  <pre class="term" data-title="Terminal">
+$ git switch -c experimento-a-partir-da-v1
+# ou, para só sair dali:
+$ git switch main
+</pre>
+
+  <h3><svg class="ic"><use href="#i-file"/></svg>Outros comandos úteis</h3>
+  <pre class="term" data-title="Terminal">
+$ git add -p                         # escolhe PEDAÇOS de um arquivo para o commit
+$ git commit --allow-empty -m "Dispara o deploy"   # commit sem mudanças
+$ git archive --format=zip -o site.zip HEAD        # exporta o projeto sem a pasta .git
+$ git restore -p arquivo             # descarta pedaços específicos
+$ git range-diff main feature-v1 feature-v2        # compara duas versões de uma branch
+$ git gc                             # compacta e otimiza o repositório
+$ git fsck                           # verifica a integridade
+$ git count-objects -vH              # tamanho do repositório
+$ git help rebase                    # manual completo de qualquer comando
+$ git rebase -h                      # resumo rápido das opções
+</pre>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 17</div><p>Faça 3 commits, rode <code>git reset --hard HEAD~3</code> (sim, de propósito!) e recupere tudo usando o <code>git reflog</code>. Depois crie o alias <code>git lg</code> e use-o para ver o resultado.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-17" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 18 ============ -->
+<section class="aula" id="aula-18" data-nav="Boas práticas">
+  <div class="aula-head"><span class="aula-tag">Aula 18</span><h2>Boas práticas e fluxos de trabalho profissionais</h2></div>
+  <p class="aula-goal">Como as equipes de verdade organizam o trabalho com Git.</p>
+
+  <h3><svg class="ic"><use href="#i-book"/></svg>Mensagens de commit que contam a história</h3>
+  <p>Compare. Qual histórico você prefere herdar?</p>
+  <div class="duo">
+    <div class="side"><h5>Ruim</h5><pre class="term" data-title="git log --oneline" style="margin:6px 0 0">
+a1b2c3d ajustes
+d4e5f6a arrumei
+b7c8d9e asdasd
+f0a1b2c agora vai
+</pre></div>
+    <div class="side"><h5>Bom</h5><pre class="term" data-title="git log --oneline" style="margin:6px 0 0">
+a1b2c3d feat: adiciona login com Google
+d4e5f6a fix: corrige cálculo do frete grátis
+b7c8d9e docs: explica variáveis do .env
+f0a1b2c refactor: extrai validação de CPF
+</pre></div>
+  </div>
+  <h4>Conventional Commits</h4>
+  <p>Um padrão muito adotado: <code>tipo(escopo opcional): descrição curta no imperativo</code>.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Tipo</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td><code>feat</code></td><td>Nova funcionalidade</td></tr>
+      <tr><td><code>fix</code></td><td>Correção de bug</td></tr>
+      <tr><td><code>docs</code></td><td>Só documentação</td></tr>
+      <tr><td><code>style</code></td><td>Formatação, sem mudar lógica</td></tr>
+      <tr><td><code>refactor</code></td><td>Reorganização de código sem mudar comportamento</td></tr>
+      <tr><td><code>test</code></td><td>Testes</td></tr>
+      <tr><td><code>perf</code></td><td>Melhoria de desempenho</td></tr>
+      <tr><td><code>build</code> / <code>ci</code></td><td>Dependências, build, pipelines</td></tr>
+      <tr><td><code>chore</code></td><td>Tarefas de manutenção</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="list">
+    <li>Título com até uns 50 caracteres, sem ponto final.</li>
+    <li>Use o imperativo: "adiciona", "corrige" (complete a frase "este commit...").</li>
+    <li>Se precisar explicar, pule uma linha e escreva o corpo dizendo <strong>por quê</strong>.</li>
+    <li>Mudança que quebra compatibilidade: <code>feat!: ...</code> ou <code>BREAKING CHANGE:</code> no corpo.</li>
+  </ul>
+
+  <h3><svg class="ic"><use href="#i-branch"/></svg>Fluxos de trabalho</h3>
+  <div class="cards">
+    <div class="card"><h4><svg class="ic"><use href="#i-branch"/></svg>GitHub Flow</h4><p>Uma <code>main</code> sempre pronta para produção + branches curtas por funcionalidade + PR. Simples e ideal para a maioria dos projetos e para deploy contínuo.</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-layers"/></svg>Git Flow</h4><p>Branches fixas <code>main</code> e <code>develop</code>, mais <code>feature/*</code>, <code>release/*</code> e <code>hotfix/*</code>. Mais cerimônia; útil para software com versões planejadas.</p></div>
+    <div class="card"><h4><svg class="ic"><use href="#i-rocket"/></svg>Trunk-Based</h4><p>Todos integram na <code>main</code> várias vezes por dia, com branches de horas. Exige testes automatizados fortes e feature flags.</p></div>
+  </div>
+
+  <h3><svg class="ic"><use href="#i-check"/></svg>Checklist do profissional</h3>
+  <ul class="list">
+    <li><strong>Commits pequenos e atômicos</strong>: uma ideia por commit.</li>
+    <li><strong>Nunca trabalhe direto na <code>main</code></strong>; crie uma branch.</li>
+    <li><strong><code>git pull</code> antes de começar</strong> e antes de abrir PR.</li>
+    <li><strong>Revise o que vai comitar</strong> com <code>git diff --staged</code>.</li>
+    <li><strong>Nunca comite segredos</strong> (senhas, tokens, <code>.env</code>). Use <code>.gitignore</code> e um <code>.env.example</code> sem valores reais.</li>
+    <li><strong>Proteja a <code>main</code></strong> no GitHub: <em>Settings → Rules</em> (ou <em>Branches</em>), exigindo PR e aprovação.</li>
+    <li><strong>Apague branches</strong> depois do merge.</li>
+    <li><strong>Escreva um bom README</strong>.</li>
+    <li><strong>Automatize testes</strong> com GitHub Actions (arquivos YAML em <code>.github/workflows/</code>).</li>
+  </ul>
+
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 18</div><p>Reescreva (com <code>git rebase -i</code> numa branch sua) as mensagens dos seus últimos commits seguindo o Conventional Commits. Depois ative uma regra de proteção na <code>main</code> do seu repositório exigindo Pull Request.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-18" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ AULA 19 ============ -->
+<section class="aula" id="aula-19" data-nav="Projeto final">
+  <div class="aula-head"><span class="aula-tag">Aula 19</span><h2>Projeto final: o ciclo completo</h2></div>
+  <p class="aula-goal">Juntar tudo num projeto real, do <code>git init</code> à release.</p>
+
+  <p>Chegou a hora de mostrar que você aprendeu. Siga o roteiro abaixo sem olhar as aulas anteriores (se travar, tudo bem consultar!). Vamos criar o projeto <strong>lista-de-tarefas</strong>.</p>
+  <pre class="term" data-title="Terminal">
+# 1. criar e configurar
+$ mkdir lista-de-tarefas &amp;&amp; cd lista-de-tarefas
+$ git init
+$ echo "# Lista de Tarefas" > README.md
+$ printf "node_modules/\n.env\n*.log\n" > .gitignore
+$ git add .
+$ git commit -m "chore: estrutura inicial do projeto"
+
+# 2. publicar no GitHub
+$ gh repo create lista-de-tarefas --public --source=. --remote=origin --push
+#   (ou crie pelo site e use: git remote add origin URL &amp;&amp; git push -u origin main)
+
+# 3. primeira funcionalidade numa branch
+$ git switch -c feature/adicionar-tarefa
+$ echo "&lt;input id='nova'&gt;&lt;button&gt;Adicionar&lt;/button&gt;" > index.html
+$ git add index.html
+$ git commit -m "feat: campo para adicionar tarefa"
+$ git push -u origin feature/adicionar-tarefa
+$ gh pr create --fill
+$ gh pr merge --squash --delete-branch
+#   (o gh já apaga a branch no GitHub e na sua máquina e te leva para a main)
+
+# 4. garantir que a main local está atualizada
+$ git switch main
+$ git pull
+$ git branch                      # a feature não aparece mais
+
+# 5. corrigir um bug com revert
+$ echo "&lt;p&gt;bug&lt;/p&gt;" >> index.html
+$ git commit -am "feat: texto experimental"
+$ git push
+$ git revert --no-edit HEAD
+$ git push
+
+# 6. lançar a versão
+$ git tag -a v1.0.0 -m "Primeira versão"
+$ git push origin v1.0.0
+$ gh release create v1.0.0 --generate-notes
+
+# 7. admirar o resultado
+$ git log --oneline --graph --all --decorate
+</pre>
+
+  <div class="call prof">
+    <div class="ico"><svg viewBox="0 0 120 120" width="44" height="44" aria-hidden="true"><use href="#mascot"/></svg></div>
+    <div>
+      <div class="ttl">Parabéns, você chegou até aqui!</div>
+      <p>Se você praticou cada aula, agora sabe versionar, comitar, criar branches, resolver conflitos, colaborar no GitHub, desfazer erros e lançar versões. Isso é o que o mercado espera de qualquer desenvolvedor. O próximo passo é usar Git em <strong>todos</strong> os seus projetos, até os pequenos. A prática é o que transforma comando decorado em reflexo.</p>
+    </div>
+  </div>
+  <div class="call chal">
+    <div class="ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="ttl">Desafio 19 (o grande desafio)</div><p>Chame um amigo. Um cria o repositório, o outro faz um fork. Cada um abre um PR para o outro, provoquem um conflito no mesmo arquivo, resolvam, revisem o código um do outro e publiquem uma release <code>v1.0.0</code> juntos.</p></div>
+  </div>
+  <div class="done"><button type="button" data-done="aula-19" aria-pressed="false"><svg class="ic"><use href="#i-check"/></svg>Concluí esta aula</button></div>
+</section>
+
+<!-- ============ SOCORRO ============ -->
+<section class="aula" id="socorro" data-nav="Socorro! Erros comuns" data-extra="1">
+  <div class="aula-head"><span class="aula-tag extra"><svg class="ic"><use href="#i-life"/></svg>Apêndice A</span><h2>Socorro! Erros comuns e como sair deles</h2></div>
+  <p class="aula-goal">As situações que todo mundo enfrenta. Guarde esta página nos favoritos.</p>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>Fiz commit na branch errada (ainda não enviei)</summary><div class="body">
+    <pre class="term" data-title="Terminal">
+$ git branch branch-certa       # cria a branch certa apontando para o commit atual
+$ git reset --hard HEAD~1       # volta a branch errada um commit
+$ git switch branch-certa       # seu commit está aqui
+</pre>
+    <p>Se a branch certa já existe: anote o hash, desfaça com <code>git reset --hard HEAD~1</code>, vá para a branch certa e use <code>git cherry-pick hash</code>.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>Comitei uma senha, token ou arquivo .env</summary><div class="body">
+    <div class="call danger" style="margin-top:0"><div class="ico"><svg class="ic"><use href="#i-stop"/></svg></div><div><div class="ttl">Primeiro de tudo: troque a senha ou revogue o token</div><p>Se o commit foi para o GitHub, considere o segredo vazado, mesmo que você apague depois. Robôs varrem o GitHub atrás disso em minutos.</p></div></div>
+    <p>Se ainda <strong>não enviou</strong>: <code>git rm --cached .env</code>, adicione ao <code>.gitignore</code> e use <code>git commit --amend</code> (ou <code>git reset --soft</code>). Se <strong>já enviou</strong>, além de revogar a credencial, é preciso reescrever o histórico com a ferramenta <strong>git filter-repo</strong> (ou o BFG Repo-Cleaner) e forçar o envio, combinando antes com a equipe.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>error: failed to push some refs / [rejected] non-fast-forward</summary><div class="body">
+    <p>Tem commits no remoto que você não tem. Traga primeiro:</p>
+    <pre class="term" data-title="Terminal">
+$ git pull --rebase
+$ git push
+</pre></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>Authentication failed / Support for password authentication was removed</summary><div class="body">
+    <p>Você tentou usar a senha do site. Use o login pelo navegador (<code>gh auth login</code> ou Git Credential Manager), uma chave SSH ou um Personal Access Token. Veja a Aula 11.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>Permission denied (publickey)</summary><div class="body">
+    <pre class="term" data-title="Terminal">
+$ ssh-add -l                    # a chave está carregada no agente?
+$ ssh-add ~/.ssh/id_ed25519     # se não estiver, adicione
+$ ssh -T git@github.com         # testa de novo
+$ git remote -v                 # a URL está no formato git@github.com:...?
+</pre>
+    <p>Confira também se a chave <strong>pública</strong> está cadastrada em <em>Settings → SSH and GPG keys</em>.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>fatal: not a git repository</summary><div class="body">
+    <p>Você está numa pasta que não é um repositório. Use <code>pwd</code> para ver onde está e <code>cd</code> até a pasta do projeto, ou rode <code>git init</code> se for um projeto novo.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>fatal: refusing to merge unrelated histories</summary><div class="body">
+    <p>Acontece quando você criou o repositório no GitHub <strong>com</strong> README e já tinha um projeto local com histórico próprio. Junte os dois uma vez:</p>
+    <pre class="term" data-title="Terminal">
+$ git pull origin main --allow-unrelated-histories
+</pre></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>You are in 'detached HEAD' state</summary><div class="body">
+    <p>Você está olhando um commit específico, fora de qualquer branch. Para guardar o que fez ali: <code>git switch -c nome-da-branch</code>. Para só voltar: <code>git switch main</code>.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>warning: LF will be replaced by CRLF</summary><div class="body">
+    <p>É só um aviso sobre finais de linha (Aula 03). Para a equipe toda ter o mesmo comportamento, crie um arquivo <code>.gitattributes</code> na raiz:</p>
+    <pre class="term" data-title=".gitattributes">
+* text=auto
+*.sh text eol=lf
+*.bat text eol=crlf
+*.png binary
+</pre></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>Coloquei no .gitignore e o arquivo continua aparecendo</summary><div class="body">
+    <p>Ele já era rastreado. Rode <code>git rm --cached arquivo</code> (ou <code>-r</code> para pastas) e comite.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>Apaguei uma branch / fiz reset --hard e perdi commits</summary><div class="body">
+    <p><code>git reflog</code>, encontre o hash e recrie: <code>git branch recuperada hash</code>. Veja a Aula 17.</p></div></details>
+
+  <details class="faq"><summary><svg class="ic"><use href="#i-alert"/></svg>Quero desistir de um merge ou rebase no meio</summary><div class="body">
+    <p><code>git merge --abort</code>, <code>git rebase --abort</code> ou <code>git cherry-pick --abort</code>. Tudo volta a como estava antes de você começar.</p></div></details>
+</section>
+
+<!-- ============ REFERÊNCIA ============ -->
+<section class="aula" id="referencia" data-nav="Guia de comandos" data-extra="1">
+  <div class="aula-head"><span class="aula-tag extra"><svg class="ic"><use href="#i-search"/></svg>Apêndice B</span><h2>Guia de referência de comandos</h2></div>
+  <p class="aula-goal">Todos os comandos do manual num só lugar. Pesquise por nome ou pelo que você quer fazer.</p>
+  <div class="ref-tools">
+    <label class="search" for="refSearch"><svg class="ic"><use href="#i-search"/></svg><input id="refSearch" type="search" placeholder="Ex.: desfazer, branch, tag, remoto..." autocomplete="off"></label>
+    <div class="chips" id="refLevels" role="group" aria-label="Filtrar por nível">
+      <button type="button" data-lvl="all" aria-pressed="true">Todos</button>
+      <button type="button" data-lvl="b" aria-pressed="false">Básico</button>
+      <button type="button" data-lvl="i" aria-pressed="false">Intermediário</button>
+      <button type="button" data-lvl="a" aria-pressed="false">Avançado</button>
+    </div>
+  </div>
+  <p class="ref-count" id="refCount"></p>
+  <div class="tbl"><table id="refTable">
+    <thead><tr><th>Comando</th><th>O que faz</th><th>Nível</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="aula" id="quiz" data-nav="Teste seus conhecimentos" data-extra="1">
+  <div class="aula-head"><span class="aula-tag extra"><svg class="ic"><use href="#i-star"/></svg>Apêndice C</span><h2>Teste seus conhecimentos</h2></div>
+  <p class="aula-goal">10 perguntas para conferir se a teoria ficou. Sem pressão: errar aqui é aprender.</p>
+  <div id="quizBox"></div>
+  <p class="score" id="quizScore" aria-live="polite"></p>
+</section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Manual Git &amp; GitHub · feito por Miquéias (<a href="https://github.com/devmiqueias">github.com/devmiqueias</a>) para fortalecer a comunidade do software livre e o acesso livre ao conhecimento.</p>
+    <p>Licença <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>: use, compartilhe e adapte para estudar e ensinar, dando o crédito e mantendo a mesma licença. Uso comercial não permitido.</p>
+    <p> Git é um projeto open source; GitHub é um serviço da GitHub, Inc. Os comandos <code>switch</code> e <code>restore</code> exigem Git 2.23 ou mais novo, e <code>init.defaultBranch</code> exige Git 2.28 ou mais novo.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  var OS_NAMES={win:"Windows",linux:"Linux",mac:"macOS"};
+
+  /* ---------- Terminais ---------- */
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+  document.querySelectorAll("pre.term").forEach(function(pre){
+    var raw=pre.textContent.replace(/^\n+|\s+$/g,"");
+    var lines=raw.split("\n");
+    var cmds=[];
+    var html=lines.map(function(l){
+      if(l.indexOf("$ ")===0){
+        var rest=l.slice(2), m=rest.match(/^(.*?)(\s{2,}#.*)$/);
+        var cmd=m?m[1]:rest;
+        cmds.push(cmd.replace(/\s+$/,""));
+        return '<span class="p">$ </span><span class="cmd">'+esc(cmd)+'</span>'+(m?'<span class="c">'+esc(m[2])+'</span>':'');
+      }
+      if(/^\s*#/.test(l)) return '<span class="c">'+esc(l)+'</span>';
+      return '<span class="o">'+esc(l)+'</span>';
+    }).join("\n");
+    var isFile=cmds.length===0;
+    var copyText=isFile?raw:cmds.join("\n");
+    var box=document.createElement("div"); box.className="term";
+    if(pre.getAttribute("style")) box.setAttribute("style",pre.getAttribute("style"));
+    var title=pre.dataset.title||"Terminal";
+    box.innerHTML='<div class="term-bar"><span class="t"><svg class="ic"><use href="#'+(isFile?'i-file':'i-term')+'"/></svg>'+esc(title)+'</span><button class="copy" type="button"><svg class="ic"><use href="#i-copy"/></svg><span>Copiar</span></button></div><pre></pre>';
+    box.querySelector("pre").innerHTML=html;
+    pre.replaceWith(box);
+    var btn=box.querySelector(".copy"), lbl=btn.querySelector("span");
+    btn.addEventListener("click",function(){
+      function done(){lbl.textContent="Copiado!";setTimeout(function(){lbl.textContent="Copiar"},1600)}
+      function fallback(){var r=document.createRange();r.selectNodeContents(box.querySelector("pre"));var s=getSelection();s.removeAllRanges();s.addRange(r);lbl.textContent="Selecionado: Ctrl+C"}
+      try{navigator.clipboard.writeText(copyText).then(done,fallback)}catch(e){fallback()}
+    });
+  });
+
+  /* ---------- Diagramas de commits ---------- */
+  function drawGraph(host){
+    var s; try{s=JSON.parse(host.dataset.spec)}catch(e){return}
+    var X=84,Y=66,R=15,pos={},parts=[],minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9;
+    function ext(x1,y1,x2,y2){minX=Math.min(minX,x1);maxX=Math.max(maxX,x2);minY=Math.min(minY,y1);maxY=Math.max(maxY,y2)}
+    s.nodes.forEach(function(n){pos[n.id]={x:n.x*X,y:n.y*Y,n:n}});
+    (s.edges||[]).forEach(function(e){
+      var p=pos[e[0]],q=pos[e[1]];
+      var ghost=p.n.k==="ghost"||q.n.k==="ghost";
+      var k=q.n.k==="merge"?p.n.k:q.n.k;
+      var d=p.y===q.y?"M"+p.x+" "+p.y+"L"+q.x+" "+q.y:"M"+p.x+" "+p.y+"C"+(p.x+X*.65)+" "+p.y+" "+(q.x-X*.65)+" "+q.y+" "+q.x+" "+q.y;
+      parts.push('<path class="g-edge e-'+k+(ghost?" ghost":"")+'" d="'+d+'"/>');
+    });
+    s.nodes.forEach(function(n){
+      var p=pos[n.id];
+      parts.push('<circle class="g-node n-'+n.k+'" cx="'+p.x+'" cy="'+p.y+'" r="'+R+'"/>');
+      parts.push('<text class="g-ntext'+(n.k==="ghost"?" ghost":"")+'" x="'+p.x+'" y="'+(p.y+.5)+'">'+esc(n.t||"")+'</text>');
+      ext(p.x-R,p.y-R,p.x+R,p.y+R);
+    });
+    var stack={};
+    (s.refs||[]).forEach(function(r){
+      var p=pos[r.at]; var key=r.at+(r.pos||"top"); var i=stack[key]||0; stack[key]=i+1;
+      var w=Math.round(r.text.length*7.3+18), h=22, y;
+      y=(r.pos==="bottom")?p.y+R+8+i*(h+5):p.y-R-8-h-i*(h+5);
+      var x=p.x-w/2;
+      parts.push('<g class="g-ref '+(r.kind||"")+'"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="6"/><text x="'+p.x+'" y="'+(y+h/2+.5)+'">'+esc(r.text)+'</text></g>');
+      ext(x,y,x+w,y+h);
+    });
+    var pad=6, vx=minX-pad, vy=minY-pad, vw=maxX-minX+pad*2, vh=maxY-minY+pad*2;
+    host.innerHTML='<svg viewBox="'+vx+" "+vy+" "+vw+" "+vh+'" width="'+vw+'" role="img" aria-label="'+esc(host.closest("figure")&&host.closest("figure").querySelector("figcaption")?host.closest("figure").querySelector("figcaption").textContent:"Diagrama de commits")+'">'+parts.join("")+'</svg>';
+  }
+  document.querySelectorAll(".graph[data-spec]").forEach(drawGraph);
+
+  /* ---------- Seletor de sistema ---------- */
+  function guessOS(){var u=(navigator.userAgent||"")+" "+(navigator.platform||"");if(/Win/i.test(u))return"win";if(/Mac|iPhone|iPad/i.test(u))return"mac";return"linux"}
+  var current=store.get("manual-git-os")||guessOS();
+  var groups=[].slice.call(document.querySelectorAll(".osgroup"));
+  groups.forEach(function(g,gi){
+    var tabs=document.createElement("div"); tabs.className="os-tabs"; tabs.setAttribute("role","tablist");
+    ["win","linux","mac"].forEach(function(o){
+      if(!g.querySelector('.os[data-os="'+o+'"]'))return;
+      var b=document.createElement("button"); b.type="button"; b.setAttribute("role","tab"); b.dataset.os=o; b.id="ostab-"+gi+"-"+o;
+      b.innerHTML='<svg class="ic"><use href="#'+(o==="linux"?"i-term":"i-monitor")+'"/></svg>'+OS_NAMES[o];
+      b.addEventListener("click",function(){setOS(o,b)});
+      tabs.appendChild(b);
+    });
+    g.insertBefore(tabs,g.firstChild);
+  });
+  function setOS(o,anchor){
+    var before=anchor?anchor.getBoundingClientRect().top:null;
+    current=o; store.set("manual-git-os",o);
+    document.querySelectorAll("#osSeg button").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.os===o))});
+    groups.forEach(function(g){
+      g.querySelectorAll(".os-tabs button").forEach(function(b){b.setAttribute("aria-selected",String(b.dataset.os===o))});
+      g.querySelectorAll(":scope > .os").forEach(function(p){p.hidden=p.dataset.os!==o});
+    });
+    if(anchor){var after=anchor.getBoundingClientRect().top;window.scrollBy(0,after-before)}
+  }
+  document.querySelectorAll("#osSeg button").forEach(function(b){b.addEventListener("click",function(){setOS(b.dataset.os)})});
+  setOS(current);
+
+  /* ---------- Sumário e progresso ---------- */
+  var sections=[].slice.call(document.querySelectorAll("section.aula[data-nav]"));
+  function doneSet(){try{return JSON.parse(store.get("manual-git-done")||"[]")}catch(e){return[]}}
+  function buildToc(el){
+    var ol=document.createElement("ol");
+    sections.forEach(function(s){
+      var li=document.createElement("li"), a=document.createElement("a");
+      a.href="#"+s.id; a.dataset.target=s.id;
+      var num=s.dataset.extra?"+":s.id.replace("aula-","");
+      a.innerHTML='<span class="n">'+num+'</span><span>'+esc(s.dataset.nav)+'</span><span class="ok" aria-hidden="true"></span>';
+      li.appendChild(a); ol.appendChild(li);
+    });
+    el.appendChild(ol);
+  }
+  buildToc(document.getElementById("tocSide")); buildToc(document.getElementById("tocMobile"));
+  document.querySelectorAll("#tocMobile a").forEach(function(a){a.addEventListener("click",function(){a.closest("details").open=false})});
+  function refreshDone(){
+    var d=doneSet();
+    document.querySelectorAll(".toc a").forEach(function(a){a.querySelector(".ok").textContent=d.indexOf(a.dataset.target)>-1?"✓":""});
+    document.querySelectorAll("[data-done]").forEach(function(b){
+      var on=d.indexOf(b.dataset.done)>-1; b.setAttribute("aria-pressed",String(on));
+      b.lastChild.textContent=on?"Aula concluída":"Concluí esta aula";
+    });
+  }
+  document.querySelectorAll("[data-done]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var d=doneSet(), i=d.indexOf(b.dataset.done);
+      if(i>-1)d.splice(i,1);else d.push(b.dataset.done);
+      store.set("manual-git-done",JSON.stringify(d)); refreshDone();
+    });
+  });
+  refreshDone();
+
+  var bar=document.getElementById("progress");
+  function onScroll(){
+    var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?Math.min(100,h.scrollTop/max*100):0)+"%";
+    var cur=null;
+    sections.forEach(function(s){if(s.getBoundingClientRect().top<140)cur=s.id});
+    document.querySelectorAll("#tocSide a").forEach(function(a){a.classList.toggle("active",a.dataset.target===cur)});
+  }
+  window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
+
+  /* ---------- Referência ---------- */
+  var REF=[
+    ["Configuração","git config --global user.name \"Nome\"","Define seu nome nos commits","b"],
+    ["Configuração","git config --global user.email \"email\"","Define seu e-mail nos commits","b"],
+    ["Configuração","git config --global init.defaultBranch main","Branch inicial padrão chamada main","b"],
+    ["Configuração","git config --global core.editor \"code --wait\"","Usa o VS Code como editor do Git","b"],
+    ["Configuração","git config --global core.autocrlf true|input","Converte finais de linha (true no Windows, input no Linux/macOS)","i"],
+    ["Configuração","git config --list --show-origin","Lista todas as configurações e de onde vêm","b"],
+    ["Configuração","git config --global alias.lg \"log --oneline --graph --all\"","Cria um atalho de comando","i"],
+    ["Configuração","git config --global core.excludesfile ~/.gitignore_global","Define um .gitignore global","i"],
+    ["Ajuda","git help comando","Abre o manual completo de um comando","b"],
+    ["Ajuda","git comando -h","Resumo rápido das opções","b"],
+    ["Começando","git init","Transforma a pasta atual em repositório","b"],
+    ["Começando","git clone URL","Baixa um repositório com todo o histórico","b"],
+    ["Começando","git clone --depth 1 URL","Clona só o último commit (raso)","i"],
+    ["Começando","git clone --recurse-submodules URL","Clona incluindo submódulos","a"],
+    ["Básico","git status","Mostra o estado dos arquivos e a branch atual","b"],
+    ["Básico","git status -s","Status resumido","b"],
+    ["Básico","git add arquivo","Prepara um arquivo para o commit","b"],
+    ["Básico","git add .","Prepara tudo da pasta atual para baixo","b"],
+    ["Básico","git add -A","Prepara todas as mudanças, inclusive remoções","b"],
+    ["Básico","git add -p","Escolhe trechos de arquivos para preparar","i"],
+    ["Básico","git commit -m \"mensagem\"","Grava um commit com mensagem","b"],
+    ["Básico","git commit -am \"mensagem\"","Add + commit de arquivos já rastreados","b"],
+    ["Básico","git commit --amend","Refaz o último commit (mensagem ou conteúdo)","i"],
+    ["Básico","git commit --allow-empty -m \"msg\"","Cria um commit sem alterações","a"],
+    ["Básico","git rm arquivo","Apaga e prepara a remoção","b"],
+    ["Básico","git rm --cached arquivo","Para de rastrear sem apagar do disco","i"],
+    ["Básico","git mv antigo novo","Renomeia ou move um arquivo","b"],
+    ["Histórico","git log","Histórico completo de commits","b"],
+    ["Histórico","git log --oneline --graph --all","Histórico resumido com desenho das branches","b"],
+    ["Histórico","git log -p","Histórico com o código alterado","i"],
+    ["Histórico","git log --stat","Histórico com arquivos alterados","i"],
+    ["Histórico","git log --author=\"Nome\"","Filtra commits por autor","i"],
+    ["Histórico","git log --since=\"2 weeks ago\"","Filtra por data","i"],
+    ["Histórico","git log --grep=\"texto\"","Busca na mensagem dos commits","i"],
+    ["Histórico","git log -S \"texto\"","Commits que adicionaram ou removeram um texto","a"],
+    ["Histórico","git log --follow -- arquivo","Histórico de um arquivo, mesmo renomeado","i"],
+    ["Histórico","git log main..feature","Commits da feature que não estão na main","i"],
+    ["Histórico","git show hash","Mostra um commit e suas mudanças","b"],
+    ["Histórico","git show HEAD~1:arquivo","Conteúdo de um arquivo num commit anterior","i"],
+    ["Histórico","git diff","Mudanças ainda não preparadas","b"],
+    ["Histórico","git diff --staged","Mudanças preparadas para o próximo commit","b"],
+    ["Histórico","git diff branch1 branch2","Diferença entre duas branches","i"],
+    ["Histórico","git diff --name-only","Só os nomes dos arquivos alterados","i"],
+    ["Histórico","git blame arquivo","Quem alterou cada linha e em qual commit","i"],
+    ["Histórico","git shortlog -sn","Número de commits por pessoa","i"],
+    ["Histórico","git reflog","Todo lugar por onde o HEAD passou (recuperação)","a"],
+    ["Desfazer","git restore arquivo","Descarta alterações não preparadas","b"],
+    ["Desfazer","git restore --staged arquivo","Tira da staging mantendo as alterações","b"],
+    ["Desfazer","git restore --source=hash arquivo","Recupera o arquivo de um commit antigo","i"],
+    ["Desfazer","git reset --soft HEAD~1","Desfaz o commit, mantém mudanças preparadas","i"],
+    ["Desfazer","git reset HEAD~1","Desfaz o commit, mantém mudanças nos arquivos","i"],
+    ["Desfazer","git reset --hard HEAD~1","Desfaz o commit e APAGA as mudanças","i"],
+    ["Desfazer","git revert hash","Cria um commit que desfaz outro (seguro)","i"],
+    ["Desfazer","git clean -n","Simula a remoção de arquivos não rastreados","i"],
+    ["Desfazer","git clean -fd","Remove arquivos e pastas não rastreados","i"],
+    ["Branches","git branch","Lista branches locais","b"],
+    ["Branches","git branch -a","Lista branches locais e remotas","b"],
+    ["Branches","git branch -vv","Mostra a branch remota acompanhada","i"],
+    ["Branches","git branch nome","Cria uma branch","b"],
+    ["Branches","git switch nome","Muda de branch","b"],
+    ["Branches","git switch -c nome","Cria e muda para a nova branch","b"],
+    ["Branches","git switch -","Volta para a branch anterior","i"],
+    ["Branches","git checkout -b nome","Forma antiga de criar e mudar de branch","b"],
+    ["Branches","git branch -m novo-nome","Renomeia a branch atual","b"],
+    ["Branches","git branch -d nome","Apaga branch já mesclada","b"],
+    ["Branches","git branch -D nome","Força apagar uma branch","i"],
+    ["Branches","git branch --merged","Branches já mescladas na atual","i"],
+    ["Branches","git switch --detach hash","Vai para um commit sem branch (detached HEAD)","a"],
+    ["Merge","git merge branch","Mescla a branch na atual","b"],
+    ["Merge","git merge --no-ff branch","Mescla sempre criando commit de merge","i"],
+    ["Merge","git merge --squash branch","Junta os commits da branch em um só","i"],
+    ["Merge","git merge --abort","Cancela um merge com conflito","i"],
+    ["Merge","git checkout --ours|--theirs arquivo","Escolhe uma das versões no conflito","i"],
+    ["Merge","git mergetool","Abre a ferramenta visual de conflitos","i"],
+    ["Remotos","git remote -v","Lista os remotos","b"],
+    ["Remotos","git remote add origin URL","Conecta a um repositório remoto","b"],
+    ["Remotos","git remote set-url origin URL","Troca a URL do remoto","i"],
+    ["Remotos","git remote rename antigo novo","Renomeia um remoto","i"],
+    ["Remotos","git remote remove nome","Remove um remoto","i"],
+    ["Remotos","git push -u origin main","Primeiro envio, ligando a branch ao remoto","b"],
+    ["Remotos","git push","Envia commits","b"],
+    ["Remotos","git push origin --delete branch","Apaga uma branch no GitHub","i"],
+    ["Remotos","git push --force-with-lease","Força o envio com proteção","a"],
+    ["Remotos","git pull","Baixa e mescla mudanças do remoto","b"],
+    ["Remotos","git pull --rebase","Baixa e reaplica seus commits por cima","i"],
+    ["Remotos","git fetch","Baixa o histórico sem mesclar","i"],
+    ["Remotos","git fetch --prune","Remove referências de branches apagadas no remoto","i"],
+    ["Remotos","git remote add upstream URL","Adiciona o repositório original de um fork","i"],
+    ["Rebase","git rebase main","Reaplica seus commits sobre a main","a"],
+    ["Rebase","git rebase -i HEAD~N","Edita, junta, reordena ou apaga commits","a"],
+    ["Rebase","git rebase --continue|--skip|--abort","Continua, pula ou cancela um rebase","a"],
+    ["Rebase","git commit --fixup hash","Cria um commit de correção para outro commit","a"],
+    ["Rebase","git rebase -i --autosquash main","Aplica os fixups automaticamente","a"],
+    ["Stash","git stash","Guarda alterações temporariamente","i"],
+    ["Stash","git stash push -m \"msg\"","Guarda com descrição","i"],
+    ["Stash","git stash -u","Guarda incluindo arquivos novos","i"],
+    ["Stash","git stash list","Lista o que está guardado","i"],
+    ["Stash","git stash pop","Devolve o último e remove da lista","i"],
+    ["Stash","git stash apply stash@{n}","Devolve um e mantém na lista","i"],
+    ["Stash","git stash drop stash@{n}","Apaga um stash","i"],
+    ["Stash","git stash clear","Apaga todos os stashes","i"],
+    ["Stash","git stash branch nome","Cria uma branch a partir do stash","a"],
+    ["Tags","git tag","Lista tags","i"],
+    ["Tags","git tag -a v1.0.0 -m \"msg\"","Cria tag anotada","i"],
+    ["Tags","git push origin v1.0.0","Envia uma tag","i"],
+    ["Tags","git push --tags","Envia todas as tags","i"],
+    ["Tags","git tag -d v1.0.0","Apaga uma tag local","i"],
+    ["Tags","git describe --tags","Mostra a tag mais próxima do commit atual","a"],
+    ["Avançado","git cherry-pick hash","Copia um commit para a branch atual","a"],
+    ["Avançado","git bisect start|good|bad|reset","Busca binária pelo commit que criou um bug","a"],
+    ["Avançado","git bisect run comando","Bisect automático rodando testes","a"],
+    ["Avançado","git worktree add ../pasta branch","Abre outra branch em outra pasta","a"],
+    ["Avançado","git submodule add URL caminho","Adiciona um submódulo","a"],
+    ["Avançado","git submodule update --init --recursive","Inicializa e baixa submódulos","a"],
+    ["Avançado","git grep \"texto\"","Busca texto nos arquivos rastreados","i"],
+    ["Avançado","git lfs track \"*.psd\"","Gerencia arquivos grandes com Git LFS","a"],
+    ["Avançado","git config --global commit.gpgsign true","Assina todos os commits","a"],
+    ["Avançado","git check-ignore -v arquivo","Mostra qual regra do .gitignore se aplica","a"],
+    ["Avançado","git archive --format=zip -o p.zip HEAD","Exporta o projeto sem a pasta .git","a"],
+    ["Manutenção","git gc","Compacta e otimiza o repositório","a"],
+    ["Manutenção","git fsck","Verifica a integridade do repositório","a"],
+    ["Manutenção","git count-objects -vH","Mostra o tamanho do repositório","a"],
+    ["GitHub CLI","gh auth login","Faz login no GitHub pelo terminal","b"],
+    ["GitHub CLI","gh repo create nome --public --source=. --push","Cria o repositório no GitHub e envia","i"],
+    ["GitHub CLI","gh repo fork dono/repo --clone","Faz fork e clona","i"],
+    ["GitHub CLI","gh pr create --fill","Abre um Pull Request","i"],
+    ["GitHub CLI","gh pr checkout numero","Baixa a branch de um PR","i"],
+    ["GitHub CLI","gh pr merge numero --squash --delete-branch","Mescla um PR","i"],
+    ["GitHub CLI","gh issue create","Cria uma issue","i"],
+    ["GitHub CLI","gh release create v1.0.0 --generate-notes","Cria uma release","i"]
+  ];
+  var LV={b:"Básico",i:"Intermediário",a:"Avançado"};
+  var tbody=document.querySelector("#refTable tbody"), q=document.getElementById("refSearch"), lvl="all";
+  function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+  function renderRef(){
+    var t=norm(q.value.trim()), rows=[], cat=null, n=0;
+    REF.forEach(function(r){
+      if(lvl!=="all"&&r[3]!==lvl)return;
+      if(t&&norm(r.join(" ")).indexOf(t)<0)return;
+      n++;
+      if(r[0]!==cat){cat=r[0];rows.push('<tr><th colspan="3">'+esc(cat)+'</th></tr>')}
+      rows.push('<tr><td><code>'+esc(r[1])+'</code></td><td>'+esc(r[2])+'</td><td><span class="lvl '+r[3]+'">'+LV[r[3]]+'</span></td></tr>');
+    });
+    tbody.innerHTML=rows.join("")||'<tr><td colspan="3">Nenhum comando encontrado. Tente outra palavra, como "desfazer" ou "branch".</td></tr>';
+    document.getElementById("refCount").textContent=n+" de "+REF.length+" comandos";
+  }
+  q.addEventListener("input",renderRef);
+  document.querySelectorAll("#refLevels button").forEach(function(b){b.addEventListener("click",function(){
+    lvl=b.dataset.lvl; document.querySelectorAll("#refLevels button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))}); renderRef();
+  })});
+  renderRef();
+
+  /* ---------- Quiz ---------- */
+  var QZ=[
+    ["Qual é a diferença entre Git e GitHub?",["São a mesma coisa, só mudam de nome","Git é o sistema de versionamento que roda no seu computador; GitHub é a plataforma online que hospeda repositórios Git","GitHub é o programa e Git é o site","Git só funciona com internet"],1,"Lembre da analogia: o Git é a câmera, o GitHub é a rede social onde você publica o álbum."],
+    ["Qual comando leva uma mudança do diretório de trabalho para a staging area?",["git commit","git push","git add","git stage-all"],2,"O git add prepara as mudanças. O commit grava, o push envia."],
+    ["O que o comando git reset --hard HEAD~1 faz?",["Cria um commit que desfaz o último","Desfaz o último commit e apaga as alterações dele dos seus arquivos","Só renomeia o último commit","Envia o último commit para o GitHub"],1,"O --hard mexe nas três áreas. Alterações não comitadas apagadas por ele não voltam."],
+    ["Um commit com bug já está no GitHub e a equipe já baixou. Como desfazer com segurança?",["git reset --hard e git push --force","Apagar o repositório","git revert hash","git commit --amend"],2,"O revert cria um commit novo que anula o antigo, sem reescrever o histórico de ninguém."],
+    ["Qual comando cria uma branch nova e já muda para ela?",["git branch -d nome","git switch -c nome","git merge nome","git push -u nome"],1,"git switch -c (ou o antigo git checkout -b) cria e já troca."],
+    ["Qual a diferença entre git fetch e git pull?",["Nenhuma","fetch envia, pull recebe","fetch só baixa o histórico; pull baixa e mescla nos seus arquivos","pull só funciona com SSH"],2,"git pull = git fetch + git merge (ou rebase, com --rebase)."],
+    ["Você deu reset --hard sem querer e perdeu commits. Qual comando te ajuda a encontrá-los?",["git reflog","git status","git clean","git stash list"],0,"O reflog guarda todo lugar por onde o HEAD passou."],
+    ["Precisa trocar de branch urgente, mas seu código está pela metade. O que usar?",["git stash","git reset --hard","git rm","git tag"],0,"O stash guarda suas alterações temporariamente. Depois, git stash pop."],
+    ["Um arquivo já comitado foi adicionado ao .gitignore e continua aparecendo. O que fazer?",["Apagar o .gitignore","git rm --cached arquivo e comitar","git push --force","Renomear o arquivo"],1,"O .gitignore só vale para arquivos não rastreados. O rm --cached para de rastrear sem apagar."],
+    ["Qual é a regra de ouro do rebase?",["Sempre fazer rebase na main","Nunca fazer rebase de commits já compartilhados com outras pessoas","Só fazer rebase com --force","Rebase só funciona no Linux"],1,"O rebase recria commits. Use-o para arrumar o seu trabalho antes de compartilhar."]
+  ];
+  var box=document.getElementById("quizBox"), right=0, answered=0;
+  QZ.forEach(function(item,i){
+    var d=document.createElement("div"); d.className="q";
+    d.innerHTML='<div class="qn">Pergunta '+(i+1)+' de '+QZ.length+'</div><h4>'+esc(item[0])+'</h4><div class="opts"></div><p class="fb" hidden></p>';
+    var opts=d.querySelector(".opts"), fb=d.querySelector(".fb");
+    item[1].forEach(function(o,j){
+      var b=document.createElement("button"); b.type="button"; b.id="q"+i+"o"+j; b.textContent=o;
+      b.addEventListener("click",function(){
+        opts.querySelectorAll("button").forEach(function(x,k){x.disabled=true;if(k===item[2])x.classList.add("right")});
+        var ok=j===item[2]; if(!ok)b.classList.add("wrong");
+        if(ok)right++; answered++;
+        fb.hidden=false; fb.innerHTML="<strong>"+(ok?"Acertou!":"Quase!")+"</strong> "+esc(item[3]);
+        if(answered===QZ.length){
+          var msg=right>=9?"Mandou muito bem! Você está pronto para o mercado.":right>=6?"Muito bom! Revise as aulas das perguntas que errou.":"Bora revisar? Volte às aulas 04, 07 e 12 e tente de novo.";
+          document.getElementById("quizScore").textContent="Resultado: "+right+" de "+QZ.length+". "+msg;
+        }
+      });
+      opts.appendChild(b);
+    });
+    box.appendChild(d);
+  });
+})();
+</script>
+
+</body>
+</html>
